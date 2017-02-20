@@ -1,8 +1,17 @@
-import iterate_over_comments
+import iterate_over_json_file
 
 
 # Returns thread trees associated with given subreddit (or all trees if no subreddit specified)
-def get_thread_trees(subreddit=""):
+def get_thread_trees(file_pairs, subreddit=""):
+    def add_thread_to_maps(thread, args):
+        args["count"] += 1
+        if args["count"] % 100000 == 0:
+            print(args["count"])
+
+        if "name" not in thread:
+            thread["name"] = "t3_"+thread["id"]
+
+        args["thread_map"][thread["name"]] = {"thread": thread, "children_ids": []}
 
     def add_comment_to_maps(comment, args):
         args["count"] += 1
@@ -20,9 +29,7 @@ def get_thread_trees(subreddit=""):
                 args["thread_map"][comment["link_id"]]["children_ids"].append(comment["name"])
             else:
                 args["thread_map"][comment["link_id"]] = {"children_ids": [comment["name"]]}
-        if comment["name"] in args["comment_map"]:
-            print("")
-            print(comment["name"])
+
         args["comment_map"][comment["name"]] = {"comment": comment, "children_ids": []}
 
     arguments = {
@@ -36,9 +43,13 @@ def get_thread_trees(subreddit=""):
 
         "current_id": "",
 
-        "parentless_count": 0
+        "error_count": 0
     }
 
-    iterate_over_comments.execute_on_each_comment(add_comment_to_maps, subreddit, arguments)
+    for file_pair in file_pairs:
+        threads_file_path = file_pair["threads_file_path"]
+        comments_file_path = file_pair["comments_file_path"]
+        iterate_over_json_file.execute_on_each_element(threads_file_path, add_thread_to_maps, arguments, subreddit)
+        iterate_over_json_file.execute_on_each_element(comments_file_path, add_comment_to_maps, arguments, subreddit)
 
     return arguments["thread_map"], arguments["comment_map"]
