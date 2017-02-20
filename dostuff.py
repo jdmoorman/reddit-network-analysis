@@ -1,6 +1,5 @@
-import json
-import networkx
 import get_thread_trees
+
 
 # This file is a sandbox for work in progress
 
@@ -16,26 +15,28 @@ print(file_pairs)
 # Optionally pass a string argument with the subreddit into get_thread_trees
 thread_map, comment_map = get_thread_trees.get_thread_trees(file_pairs)
 
-# count = 0
-# for head in sorted(thread_map):
-#     count += 1
-#     if count > 10:
-#         break
-#
-#     print()
-#     print(head, comment_map[thread_map[head]["children_ids"][0]]["comment"]["subreddit"])
-#     comment = comment_map[thread_map[head]["children_ids"][0]]["comment"]
-#     comment_ids = list(thread_map[head]["children_ids"])
-#     past_levels = [1]*len(thread_map[head]["children_ids"])
-#     curr_level = 1
-#
-#     while len(comment_ids) > 0:
-#         comment_id = comment_ids.pop(0)
-#         level = past_levels.pop(0)
-#         print(">>>>"*level, comment_id, comment_map[comment_id]["comment"]["author"])
-#         print("----"*level, comment_map[comment_id]["comment"]["body"].replace("\n", ""))
-#         comment_ids[0:0] = comment_map[comment_id]["children_ids"]
-#         past_levels[0:0] = [level+1]*len(comment_map[comment_id]["children_ids"])
+count = 0
+for head in sorted(thread_map):
+    if head != "t3_5yagw":
+        continue
+
+    count += 1
+    if count > 10:
+        break
+
+    print()
+    print(head, thread_map[head]["thread"]["subreddit"])
+    comment_ids = list(thread_map[head]["children_ids"])
+    past_levels = [1]*len(thread_map[head]["children_ids"])
+    curr_level = 1
+
+    while len(comment_ids) > 0:
+        comment_id = comment_ids.pop(0)
+        level = past_levels.pop(0)
+        print(">>>>"*level, comment_id, comment_map[comment_id]["comment"]["author"])
+        print("----"*level, comment_map[comment_id]["comment"]["body"].replace("\n", ""))
+        comment_ids[0:0] = comment_map[comment_id]["children_ids"]
+        past_levels[0:0] = [level+1]*len(comment_map[comment_id]["children_ids"])
 
 
 print(len(thread_map), len(comment_map))

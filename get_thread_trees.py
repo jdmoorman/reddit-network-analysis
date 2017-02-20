@@ -1,23 +1,18 @@
-import iterate_over_json_file
+# noinspection PyUnresolvedReferences
+from iterate_over_json_file import execute_on_each_element
 
 
 # Returns thread trees associated with given subreddit (or all trees if no subreddit specified)
 def get_thread_trees(file_pairs, subreddit=""):
     def add_thread_to_maps(thread, args):
-        args["count"] += 1
-        if args["count"] % 100000 == 0:
-            print(args["count"])
-
         if "name" not in thread:
             thread["name"] = "t3_"+thread["id"]
 
         args["thread_map"][thread["name"]] = {"thread": thread, "children_ids": []}
+        # if thread["num_comments"] > 1:
+        #     print(thread["name"], thread["num_comments"])
 
     def add_comment_to_maps(comment, args):
-        args["count"] += 1
-        if args["count"] % 100000 == 0:
-            print(args["count"])
-
         if "name" not in comment:
             comment["name"] = "t1_"+comment["id"]
 
@@ -28,7 +23,12 @@ def get_thread_trees(file_pairs, subreddit=""):
             if comment["link_id"] in args["thread_map"]:
                 args["thread_map"][comment["link_id"]]["children_ids"].append(comment["name"])
             else:
-                args["thread_map"][comment["link_id"]] = {"children_ids": [comment["name"]]}
+                args["thread_map"][comment["link_id"]] = {
+                    "thread": {
+                        "subreddit": comment["subreddit"]
+                    },
+                    "children_ids": [comment["name"]]
+                }
 
         args["comment_map"][comment["name"]] = {"comment": comment, "children_ids": []}
 
@@ -47,9 +47,8 @@ def get_thread_trees(file_pairs, subreddit=""):
     }
 
     for file_pair in file_pairs:
-        threads_file_path = file_pair["threads_file_path"]
-        comments_file_path = file_pair["comments_file_path"]
-        iterate_over_json_file.execute_on_each_element(threads_file_path, add_thread_to_maps, arguments, subreddit)
-        iterate_over_json_file.execute_on_each_element(comments_file_path, add_comment_to_maps, arguments, subreddit)
+        print("begin working on: ", file_pair)
+        execute_on_each_element(file_pair["threads_file_path"], add_thread_to_maps, arguments, subreddit)
+        execute_on_each_element(file_pair["comments_file_path"], add_comment_to_maps, arguments, subreddit)
 
     return arguments["thread_map"], arguments["comment_map"]
