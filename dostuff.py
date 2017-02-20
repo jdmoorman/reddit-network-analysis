@@ -27,9 +27,7 @@ for head in sorted(thread_map):
         comment_ids[0:0] = comment_map[comment_id]["children_ids"]
         past_levels[0:0] = [level+1]*len(comment_map[comment_id]["children_ids"])
 
-    count += 1
-    if count > 10:
-        break
+    break
 
 print(len(thread_map), len(comment_map))
 
