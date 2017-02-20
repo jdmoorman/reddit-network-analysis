@@ -9,6 +9,9 @@ def get_thread_trees(subreddit=""):
         if args["count"] % 100000 == 0:
             print(args["count"])
 
+        if "name" not in comment:
+            comment["name"] = "t1_"+comment["id"]
+
         # If comment's parent exists, add self to list of children.
         if comment["parent_id"] in args["comment_map"]:
             args["comment_map"][comment["parent_id"]]["children_ids"].append(comment["name"])
@@ -17,7 +20,9 @@ def get_thread_trees(subreddit=""):
                 args["thread_map"][comment["link_id"]]["children_ids"].append(comment["name"])
             else:
                 args["thread_map"][comment["link_id"]] = {"children_ids": [comment["name"]]}
-
+        if comment["name"] in args["comment_map"]:
+            print("")
+            print(comment["name"])
         args["comment_map"][comment["name"]] = {"comment": comment, "children_ids": []}
 
     arguments = {

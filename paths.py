@@ -9,7 +9,6 @@ def get_data_file_names():
     return ["RC_2005-12", "RC_2006-01", "RC_2006-02"]
 
 
-
 # This path is relative so should never need to change as long as you don't mess with the directory structure.
 def get_profanity_file_name():
     return ".\\example_profanity_map.json"

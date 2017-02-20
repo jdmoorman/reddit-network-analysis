@@ -10,8 +10,10 @@ thread_map, comment_map = get_thread_trees.get_thread_trees()
 
 count = 0
 for head in sorted(thread_map):
-    if head != "t3_5yba3":
-        continue
+    count += 1
+    if count > 10:
+        break
+
     print()
     print(head, comment_map[thread_map[head]["children_ids"][0]]["comment"]["subreddit"])
     comment = comment_map[thread_map[head]["children_ids"][0]]["comment"]
@@ -27,7 +29,6 @@ for head in sorted(thread_map):
         comment_ids[0:0] = comment_map[comment_id]["children_ids"]
         past_levels[0:0] = [level+1]*len(comment_map[comment_id]["children_ids"])
 
-    break
 
 print(len(thread_map), len(comment_map))
 

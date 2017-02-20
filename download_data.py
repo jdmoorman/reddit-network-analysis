@@ -17,10 +17,9 @@ for cat in categories:
             month = 1
             year += 1
 
-
         # Download the file from `url` and save it locally under `file_name`:
         with urllib.request.urlopen(url) as response:
-            data = response.read() # a `bytes` object
+            data = response.read()  # a `bytes` object
             with open(file_name, 'wb') as out_file:
                 try:
                     out_file.write(bz2.decompress(data))
