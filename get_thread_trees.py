@@ -8,6 +8,8 @@ def get_thread_trees(file_pairs, subreddit=""):
         if "name" not in thread:
             thread["name"] = "t3_"+thread["id"]
 
+        # Keep track of comment count manually
+        thread["num_comments"] = 0
         args["thread_map"][thread["name"]] = {"thread": thread, "children_ids": []}
 
     def add_comment_to_maps(comment, args):
