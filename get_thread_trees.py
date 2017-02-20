@@ -9,8 +9,6 @@ def get_thread_trees(file_pairs, subreddit=""):
             thread["name"] = "t3_"+thread["id"]
 
         args["thread_map"][thread["name"]] = {"thread": thread, "children_ids": []}
-        # if thread["num_comments"] > 1:
-        #     print(thread["name"], thread["num_comments"])
 
     def add_comment_to_maps(comment, args):
         if "name" not in comment:
@@ -25,12 +23,14 @@ def get_thread_trees(file_pairs, subreddit=""):
             else:
                 args["thread_map"][comment["link_id"]] = {
                     "thread": {
-                        "subreddit": comment["subreddit"]
+                        "subreddit": comment["subreddit"],
+                        "num_comments": 0
                     },
                     "children_ids": [comment["name"]]
                 }
 
         args["comment_map"][comment["name"]] = {"comment": comment, "children_ids": []}
+        args["thread_map"][comment["link_id"]]["thread"]["num_comments"] += 1
 
     arguments = {
         # Maps each comment ID to a time ordered list of its children's IDs

@@ -8,7 +8,8 @@ file_pairs = [
     {
         "comments_file_path": ".\\comments\\RC_" + date,
         "threads_file_path": ".\\submissions\\RS_" + date
-    } for date in file_dates]
+    } for date in file_dates
+]
 
 print(file_pairs)
 
@@ -17,15 +18,15 @@ thread_map, comment_map = get_thread_trees.get_thread_trees(file_pairs)
 
 count = 0
 for head in sorted(thread_map):
-    if head != "t3_5yagw":
+    if thread_map[head]["thread"]["num_comments"] < 50:
         continue
 
     count += 1
-    if count > 10:
+    if count > 1:
         break
 
     print()
-    print(head, thread_map[head]["thread"]["subreddit"])
+    print(head, thread_map[head]["thread"]["subreddit"], thread_map[head])
     comment_ids = list(thread_map[head]["children_ids"])
     past_levels = [1]*len(thread_map[head]["children_ids"])
     curr_level = 1
@@ -33,7 +34,7 @@ for head in sorted(thread_map):
     while len(comment_ids) > 0:
         comment_id = comment_ids.pop(0)
         level = past_levels.pop(0)
-        print(">>>>"*level, comment_id, comment_map[comment_id]["comment"]["author"])
+        print(">>>>"*level, comment_id, comment_map[comment_id]["comment"]["author"], comment_map[comment_id]["comment"])
         print("----"*level, comment_map[comment_id]["comment"]["body"].replace("\n", ""))
         comment_ids[0:0] = comment_map[comment_id]["children_ids"]
         past_levels[0:0] = [level+1]*len(comment_map[comment_id]["children_ids"])
