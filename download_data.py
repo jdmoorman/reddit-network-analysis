@@ -1,6 +1,6 @@
-import urllib.request
 import requests
 import bz2
+
 
 base = "http://files.pushshift.io/reddit/"
 categories = ["comments/RC_", "submissions/RS_"]

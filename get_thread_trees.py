@@ -1,6 +1,6 @@
 # noinspection PyUnresolvedReferences
 from iterate_over_json_file import execute_on_each_element
-
+import networkx as nx
 
 # Returns thread trees associated with given subreddit (or all trees if no subreddit specified)
 def get_thread_trees(file_pairs, subreddit=""):
@@ -8,31 +8,45 @@ def get_thread_trees(file_pairs, subreddit=""):
         if "name" not in thread:
             thread["name"] = "t3_"+thread["id"]
 
-        # Keep track of comment count manually
-        thread["num_comments"] = 0
-        args["thread_map"][thread["name"]] = {"thread": thread, "children_ids": []}
+        args["thread_map"][thread["name"]] = nx.DiGraph()
+        args["thread_map"][thread["name"]].add_node(thread["name"])
+        # args["thread_map"][thread["name"]] = {"thread": thread, "children_ids": []}
 
     def add_comment_to_maps(comment, args):
         if "name" not in comment:
             comment["name"] = "t1_"+comment["id"]
 
-        # If comment's parent exists, add self to list of children.
-        if comment["parent_id"] in args["comment_map"]:
-            args["comment_map"][comment["parent_id"]]["children_ids"].append(comment["name"])
-        else:
-            if comment["link_id"] in args["thread_map"]:
-                args["thread_map"][comment["link_id"]]["children_ids"].append(comment["name"])
-            else:
-                args["thread_map"][comment["link_id"]] = {
-                    "thread": {
-                        "subreddit": comment["subreddit"],
-                        "num_comments": 0
-                    },
-                    "children_ids": [comment["name"]]
-                }
+        # If we have never seen the thread for this comment before, add it.
+        if comment["link_id"] not in args["thread_map"]:
+            args["thread_map"][comment["link_id"]] = nx.DiGraph()
+            args["thread_map"][comment["link_id"]].add_node(comment["link_id"])
 
-        args["comment_map"][comment["name"]] = {"comment": comment, "children_ids": []}
-        args["thread_map"][comment["link_id"]]["thread"]["num_comments"] += 1
+        # If we have never seen this comment's parent before, add it.
+        if not args["thread_map"][comment["link_id"]].has_node(comment["parent_id"]):
+            args["thread_map"][comment["link_id"]].add_node(comment["parent_id"])
+
+        args["thread_map"][comment["link_id"]].add_node(comment["name"])
+        args["thread_map"][comment["link_id"]].add_edge(comment["parent_id"], comment["name"])
+
+
+
+            # # If comment's parent exists, add self to list of children.
+        # if comment["parent_id"] in args["comment_map"]:
+        #     args["comment_map"][comment["parent_id"]]["children_ids"].append(comment["name"])
+        # else:
+        #     if comment["link_id"] in args["thread_map"]:
+        #         args["thread_map"][comment["link_id"]]["children_ids"].append(comment["name"])
+        #     else:
+        #         args["thread_map"][comment["link_id"]] = {
+        #             "thread": {
+        #                 "subreddit": comment["subreddit"],
+        #                 "num_comments": 0
+        #             },
+        #             "children_ids": [comment["name"]]
+        #         }
+        #
+        # args["comment_map"][comment["name"]] = {"comment": comment, "children_ids": []}
+        # args["thread_map"][comment["link_id"]]["thread"]["num_comments"] += 1
 
     arguments = {
         # Maps each comment ID to a time ordered list of its children's IDs
