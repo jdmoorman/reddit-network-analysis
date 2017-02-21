@@ -1,6 +1,9 @@
 import get_thread_trees
 import networkx as nx
 import matplotlib.pyplot as plt
+import warnings
+warnings.filterwarnings("ignore", message="pyplot.hold is deprecated")
+warnings.filterwarnings("ignore", message="axes.hold is deprecated")
 
 # This file is a sandbox for work in progress
 
@@ -11,8 +14,6 @@ file_pairs = [
         "threads_file_path": ".\\submissions\\RS_" + date + ".json"
     } for date in file_dates
 ]
-
-print(file_pairs)
 
 # Optionally pass a string argument with the subreddit into get_thread_trees
 thread_map, comment_map = get_thread_trees.get_thread_trees(file_pairs)
@@ -40,14 +41,13 @@ for head in sorted(thread_map):
     # while len(comment_ids) > 0:
     #     comment_id = comment_ids.pop(0)
     #     level = past_levels.pop(0)
-    #     print(">>>>"*level, comment_id, comment_map[comment_id]["comment"]["author"], comment_map[comment_id]["comment"])
+    #     print(">>>>"*level,
+    # comment_id, comment_map[comment_id]["comment"]["author"], comment_map[comment_id]["comment"])
     #     print("----"*level, comment_map[comment_id]["comment"]["body"].replace("\n", ""))
     #     comment_ids[0:0] = comment_map[comment_id]["children_ids"]
     #     past_levels[0:0] = [level+1]*len(comment_map[comment_id]["children_ids"])
 
-
 print(len(thread_map), len(comment_map))
-
 
 # swear_file_path = paths.get_profanity_file_name()
 #

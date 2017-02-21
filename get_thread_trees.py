@@ -2,6 +2,7 @@
 from iterate_over_json_file import execute_on_each_element
 import networkx as nx
 
+
 # Returns thread trees associated with given subreddit (or all trees if no subreddit specified)
 def get_thread_trees(file_pairs, subreddit=""):
     def add_thread_to_maps(thread, args):
@@ -9,8 +10,10 @@ def get_thread_trees(file_pairs, subreddit=""):
             thread["name"] = "t3_"+thread["id"]
 
         args["thread_map"][thread["name"]] = nx.DiGraph()
-        args["thread_map"][thread["name"]].add_node(thread["name"])
-        # args["thread_map"][thread["name"]] = {"thread": thread, "children_ids": []}
+        args["thread_map"][thread["name"]].add_node(thread["name"], fake=False)
+
+        for key in args["thread_keys"]:
+            args["thread_map"][thread["name"]].node[thread["name"]][key] = thread[key]
 
     def add_comment_to_maps(comment, args):
         if "name" not in comment:
@@ -19,41 +22,30 @@ def get_thread_trees(file_pairs, subreddit=""):
         # If we have never seen the thread for this comment before, add it.
         if comment["link_id"] not in args["thread_map"]:
             args["thread_map"][comment["link_id"]] = nx.DiGraph()
-            args["thread_map"][comment["link_id"]].add_node(comment["link_id"])
+            args["thread_map"][comment["link_id"]].add_node(comment["link_id"], fake=True)
 
         # If we have never seen this comment's parent before, add it.
         if not args["thread_map"][comment["link_id"]].has_node(comment["parent_id"]):
-            args["thread_map"][comment["link_id"]].add_node(comment["parent_id"])
+            # Note that we don't know who the parent's parent was so this creates a disconnected component.
+            args["thread_map"][comment["link_id"]].add_node(comment["parent_id"], fake=True)
 
-        args["thread_map"][comment["link_id"]].add_node(comment["name"])
+        args["thread_map"][comment["link_id"]].add_node(comment["name"], fake=False)
         args["thread_map"][comment["link_id"]].add_edge(comment["parent_id"], comment["name"])
 
-
-
-            # # If comment's parent exists, add self to list of children.
-        # if comment["parent_id"] in args["comment_map"]:
-        #     args["comment_map"][comment["parent_id"]]["children_ids"].append(comment["name"])
-        # else:
-        #     if comment["link_id"] in args["thread_map"]:
-        #         args["thread_map"][comment["link_id"]]["children_ids"].append(comment["name"])
-        #     else:
-        #         args["thread_map"][comment["link_id"]] = {
-        #             "thread": {
-        #                 "subreddit": comment["subreddit"],
-        #                 "num_comments": 0
-        #             },
-        #             "children_ids": [comment["name"]]
-        #         }
-        #
-        # args["comment_map"][comment["name"]] = {"comment": comment, "children_ids": []}
-        # args["thread_map"][comment["link_id"]]["thread"]["num_comments"] += 1
+        for key in args["comment_keys"]:
+            args["thread_map"][comment["link_id"]].node[comment["name"]][key] = comment[key]
 
     arguments = {
-        # Maps each comment ID to a time ordered list of its children's IDs
-        "comment_map": {},
-
         # Time ordered list of thread IDs, note that there are no comments corresponding to these IDs
         "thread_map": {},
+
+        # List of info to store for each thread
+        "thread_keys": ["author", "permalink", "created_utc",
+                        "downs", "ups", "score", "subreddit", "subreddit_id", "title", "url"],
+
+        # List of info to store for each comment
+        "comment_keys": ["author", "name", "created_utc",
+                         "ups", "score", "subreddit", "subreddit_id"],
 
         "count": 0,
 
@@ -63,7 +55,6 @@ def get_thread_trees(file_pairs, subreddit=""):
     }
 
     for file_pair in file_pairs:
-        print("begin working on: ", file_pair)
         execute_on_each_element(file_pair["threads_file_path"], add_thread_to_maps, arguments, subreddit)
         execute_on_each_element(file_pair["comments_file_path"], add_comment_to_maps, arguments, subreddit)
 
