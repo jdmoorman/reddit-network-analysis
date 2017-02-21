@@ -1,8 +1,9 @@
 import urllib.request
+import requests
 import bz2
 
 base = "http://files.pushshift.io/reddit/"
-categories = ["submissions/RS_", "comments/RC_"]
+categories = ["comments/RC_", "submissions/RS_"]
 
 for cat in categories:
     year = 2005
@@ -17,11 +18,14 @@ for cat in categories:
             month = 1
             year += 1
 
-        # Download the file from `url` and save it locally under `file_name`:
-        with urllib.request.urlopen(url) as response:
-            data = response.read()  # a `bytes` object
-            with open(file_name, 'wb') as out_file:
+        # Download the file from `url` and save it locally under `file_name`.json
+
+        r = requests.get(url, stream=True)
+        with open(file_name+".json", 'wb') as out_file:
+            decompressor = bz2.BZ2Decompressor()
+            for chunk in r.iter_content(chunk_size=100*1024):
                 try:
-                    out_file.write(bz2.decompress(data))
+                    if chunk:
+                        out_file.write(decompressor.decompress(chunk))
                 except OSError:
                     print("No file found probably, writing empty file instead.")

@@ -6,8 +6,8 @@ import get_thread_trees
 file_dates = ["2005-12", "2006-01", "2006-02"]
 file_pairs = [
     {
-        "comments_file_path": ".\\comments\\RC_" + date,
-        "threads_file_path": ".\\submissions\\RS_" + date
+        "comments_file_path": ".\\comments\\RC_" + date + ".json",
+        "threads_file_path": ".\\submissions\\RS_" + date + ".json"
     } for date in file_dates
 ]
 
