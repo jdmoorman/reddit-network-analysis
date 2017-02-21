@@ -9,7 +9,7 @@ def get_thread_trees(file_pairs, subreddit=""):
         if "name" not in thread:
             thread["name"] = "t3_"+thread["id"]
 
-        args["thread_map"][thread["name"]] = nx.DiGraph()
+        args["thread_map"][thread["name"]] = nx.DiGraph(root=[thread["name"]])
         args["thread_map"][thread["name"]].add_node(thread["name"], fake=False)
 
         for key in args["thread_keys"]:
@@ -21,13 +21,19 @@ def get_thread_trees(file_pairs, subreddit=""):
 
         # If we have never seen the thread for this comment before, add it.
         if comment["link_id"] not in args["thread_map"]:
-            args["thread_map"][comment["link_id"]] = nx.DiGraph()
-            args["thread_map"][comment["link_id"]].add_node(comment["link_id"], fake=True)
+            args["thread_map"][comment["link_id"]] = nx.DiGraph(root=[comment["link_id"]])
+            args["thread_map"][comment["link_id"]].add_node(comment["link_id"])
+            args["thread_map"][comment["link_id"]].node[comment["link_id"]]["fake"] = True
+            args["thread_map"][comment["link_id"]].node[comment["link_id"]]["subreddit"] = comment["subreddit"]
+            args["thread_map"][comment["link_id"]].node[comment["link_id"]]["subreddit_id"] = comment["subreddit_id"]
 
         # If we have never seen this comment's parent before, add it.
         if not args["thread_map"][comment["link_id"]].has_node(comment["parent_id"]):
             # Note that we don't know who the parent's parent was so this creates a disconnected component.
-            args["thread_map"][comment["link_id"]].add_node(comment["parent_id"], fake=True)
+            args["thread_map"][comment["link_id"]].add_node(comment["parent_id"])
+            args["thread_map"][comment["link_id"]].node[comment["parent_id"]]["fake"] = True
+            args["thread_map"][comment["link_id"]].node[comment["parent_id"]]["subreddit"] = comment["subreddit"]
+            args["thread_map"][comment["link_id"]].node[comment["parent_id"]]["subreddit_id"] = comment["subreddit_id"]
 
         args["thread_map"][comment["link_id"]].add_node(comment["name"], fake=False)
         args["thread_map"][comment["link_id"]].add_edge(comment["parent_id"], comment["name"])
@@ -44,7 +50,7 @@ def get_thread_trees(file_pairs, subreddit=""):
                         "downs", "ups", "score", "subreddit", "subreddit_id", "title", "url"],
 
         # List of info to store for each comment
-        "comment_keys": ["author", "name", "created_utc",
+        "comment_keys": ["author", "created_utc", "body",
                          "ups", "score", "subreddit", "subreddit_id"],
 
         "count": 0,
@@ -58,4 +64,4 @@ def get_thread_trees(file_pairs, subreddit=""):
         execute_on_each_element(file_pair["threads_file_path"], add_thread_to_maps, arguments, subreddit)
         execute_on_each_element(file_pair["comments_file_path"], add_comment_to_maps, arguments, subreddit)
 
-    return arguments["thread_map"], arguments["comment_map"]
+    return arguments["thread_map"]

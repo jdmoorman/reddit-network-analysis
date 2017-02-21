@@ -5,8 +5,8 @@ import warnings
 warnings.filterwarnings("ignore", message="pyplot.hold is deprecated")
 warnings.filterwarnings("ignore", message="axes.hold is deprecated")
 
-# This file is a sandbox for work in progress
 
+# This file is a sandbox for work in progress
 file_dates = ["2005-12", "2006-01", "2006-02"]
 file_pairs = [
     {
@@ -16,38 +16,27 @@ file_pairs = [
 ]
 
 # Optionally pass a string argument with the subreddit into get_thread_trees
-thread_map, comment_map = get_thread_trees.get_thread_trees(file_pairs)
+thread_map = get_thread_trees.get_thread_trees(file_pairs)
 
-count = 0
+
+# Recursively print all comments in a thread with proper indentation
+def preorder_print(graph, node, key_to_sort="created_utc", depth=0):
+    if graph.node[node]["fake"]:
+        print(">>>>" * depth + " " * (depth > 0) + str(graph.node[node]))
+    else:
+        print(">>>>" * depth + " " * (depth > 0) + str(graph.node[node]))
+    for child in sorted(graph.successors(node), key=lambda x: graph.node[x][key_to_sort]):
+        preorder_print(graph, child, key_to_sort, depth+1)
+
+
 for head in sorted(thread_map):
-    if thread_map[head].order() < 4:
-        continue
+    assert(nx.is_forest(thread_map[head]))
 
-    count += 1
-    if count > 1:
+    if thread_map[head].order() > 20:
+        preorder_print(thread_map[head], head)
+        nx.draw(thread_map[head])
+        plt.show()
         break
-
-    nx.draw(thread_map[head])
-    plt.show()
-
-    print(thread_map[head].successors(head))
-
-    # print()
-    # print(head, thread_map[head]["thread"]["subreddit"], thread_map[head])
-    # comment_ids = list(thread_map[head]["children_ids"])
-    # past_levels = [1]*len(thread_map[head]["children_ids"])
-    # curr_level = 1
-    #
-    # while len(comment_ids) > 0:
-    #     comment_id = comment_ids.pop(0)
-    #     level = past_levels.pop(0)
-    #     print(">>>>"*level,
-    # comment_id, comment_map[comment_id]["comment"]["author"], comment_map[comment_id]["comment"])
-    #     print("----"*level, comment_map[comment_id]["comment"]["body"].replace("\n", ""))
-    #     comment_ids[0:0] = comment_map[comment_id]["children_ids"]
-    #     past_levels[0:0] = [level+1]*len(comment_map[comment_id]["children_ids"])
-
-print(len(thread_map), len(comment_map))
 
 # swear_file_path = paths.get_profanity_file_name()
 #
