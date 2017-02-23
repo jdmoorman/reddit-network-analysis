@@ -25,11 +25,11 @@ while year*100+month < 100*end_year+end_month:
         r = requests.get(url, stream=True)
         with open(file_name+".json", 'wb') as out_file:
             decompressor = bz2.BZ2Decompressor()
-            for chunk in r.iter_content(chunk_size=100*1024):
-                try:
+            try:
+                for chunk in r.iter_content(chunk_size=100*1024):
                     if chunk:
                         out_file.write(decompressor.decompress(chunk))
-                except OSError:
+            except OSError:
                     print("No file found probably, writing empty file instead.")
 
     month += 1
