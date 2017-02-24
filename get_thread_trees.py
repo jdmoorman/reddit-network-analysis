@@ -15,7 +15,7 @@ def get_thread_trees(file_pairs, subreddit=""):
         for key in args["thread_keys"]:
             args["thread_map"][thread["name"]].node[thread["name"]][key] = thread[key]
 
-        args["thread_map"][thread["name"]].node[thread["name"]]["body"] = "[fake]"
+        args["thread_map"][thread["name"]].node[thread["name"]]["body"] = thread["selftext"]
 
     def add_comment_to_maps(comment, args):
         if "name" not in comment:
