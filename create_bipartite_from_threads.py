@@ -22,9 +22,11 @@ def get_bipartite_graph(thread_map):
 
             bi_graph.add_edge(author, thread, comment=thread_map[thread].node[node]["body"])
 
-    author_nodes = set(n for n, d in bi_graph.nodes(data=True) if d["bipartite"] == "author")
-    thread_nodes = set(bi_graph) - author_nodes
-
     assert(nx.is_bipartite(bi_graph))
 
-    return bi_graph, author_nodes, thread_nodes
+    return bi_graph
+
+def get_author_and_thread_nodes(bi_graph):
+    author_nodes = set(n for n, d in bi_graph.nodes(data=True) if d["bipartite"] == "author")
+    thread_nodes = set(bi_graph) - author_nodes
+    return author_nodes, thread_nodes
