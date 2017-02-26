@@ -1,7 +1,7 @@
 import networkx as nx
 
 
-def get_bipartite_graph(thread_map):
+def get_bipartite_graph_from_threads(thread_map):
     fake_or_deleted_count = 0
     bi_graph = nx.MultiGraph()
 
@@ -25,6 +25,7 @@ def get_bipartite_graph(thread_map):
     assert(nx.is_bipartite(bi_graph))
 
     return bi_graph
+
 
 def get_author_and_thread_nodes(bi_graph):
     author_nodes = set(n for n, d in bi_graph.nodes(data=True) if d["bipartite"] == "author")

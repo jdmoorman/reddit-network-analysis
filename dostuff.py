@@ -1,5 +1,5 @@
 import get_thread_trees
-import create_bipartite_from_threads
+import bipartite_graphs
 import networkx as nx
 import matplotlib.pyplot as plt
 import warnings
@@ -39,7 +39,7 @@ for head in sorted(thread_map):
     #     plt.show()
     #     break
 
-bipartite_graph = create_bipartite_from_threads.get_bipartite_graph(thread_map)
+bipartite_graph = bipartite_graphs.get_bipartite_graph_from_threads(thread_map)
 
 largest_component = max(nx.connected_component_subgraphs(bipartite_graph), key=len)
 print("largest connected component: ", len(largest_component))
