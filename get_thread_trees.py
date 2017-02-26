@@ -15,6 +15,8 @@ def get_thread_trees(file_pairs, subreddit=""):
         for key in args["thread_keys"]:
             args["thread_map"][thread["name"]].node[thread["name"]][key] = thread[key]
 
+        args["thread_map"][thread["name"]].node[thread["name"]]["body"] = thread["selftext"]
+
     def add_comment_to_maps(comment, args):
         if "name" not in comment:
             comment["name"] = "t1_"+comment["id"]
@@ -24,6 +26,8 @@ def get_thread_trees(file_pairs, subreddit=""):
             args["thread_map"][comment["link_id"]] = nx.DiGraph(root=[comment["link_id"]])
             args["thread_map"][comment["link_id"]].add_node(comment["link_id"])
             args["thread_map"][comment["link_id"]].node[comment["link_id"]]["fake"] = True
+            args["thread_map"][comment["link_id"]].node[comment["link_id"]]["author"] = "[fake]"
+            args["thread_map"][comment["link_id"]].node[comment["link_id"]]["body"] = "[fake]"
             args["thread_map"][comment["link_id"]].node[comment["link_id"]]["subreddit"] = comment["subreddit"]
             args["thread_map"][comment["link_id"]].node[comment["link_id"]]["subreddit_id"] = comment["subreddit_id"]
 
@@ -32,6 +36,8 @@ def get_thread_trees(file_pairs, subreddit=""):
             # Note that we don't know who the parent's parent was so this creates a disconnected component.
             args["thread_map"][comment["link_id"]].add_node(comment["parent_id"])
             args["thread_map"][comment["link_id"]].node[comment["parent_id"]]["fake"] = True
+            args["thread_map"][comment["link_id"]].node[comment["parent_id"]]["author"] = "[fake]"
+            args["thread_map"][comment["link_id"]].node[comment["parent_id"]]["body"] = "[fake]"
             args["thread_map"][comment["link_id"]].node[comment["parent_id"]]["subreddit"] = comment["subreddit"]
             args["thread_map"][comment["link_id"]].node[comment["parent_id"]]["subreddit_id"] = comment["subreddit_id"]
 
