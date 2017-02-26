@@ -1,5 +1,6 @@
 import get_thread_trees
 import bipartite_graphs
+import thread_tree_utils
 import get_subtrees_from_threads
 import networkx as nx
 import warnings
@@ -22,25 +23,19 @@ file_pairs = [
 # Optionally pass a string argument with the subreddit into get_thread_trees
 thread_map = get_thread_trees.get_thread_trees(file_pairs)
 
-# # Recursively print all comments in a thread with proper indentation
-# def preorder_print(graph, node, key_to_sort="created_utc", depth=0):
-#     if graph.node[node]["fake"]:
-#         print(">>>>" * depth + " " * (depth > 0) + str(graph.node[node]))
-#     else:
-#         print(">>>>" * depth + " " * (depth > 0) + str(graph.node[node]))
-#     for child in sorted(graph.successors(node), key=lambda x: graph.node[x][key_to_sort]):
-#         preorder_print(graph, child, key_to_sort, depth+1)
-
 def criteria(comment):
-    return random.randint(0,4)>0
+    return "it" in comment["body"].lower()
 
 for head in sorted(thread_map):
     assert(nx.is_forest(thread_map[head]))
 
     if thread_map[head].order() > 20:
+        thread_tree_utils.preorder_print(thread_map[head], head)
         subtree_list = get_subtrees_from_threads.get_subtrees_using_criteria(thread_map[head], criteria)
         for tree in subtree_list:
-            print(tree.order())
+            print()
+            print("#nodes:",tree.order())
+            thread_tree_utils.preorder_print(tree, thread_tree_utils.get_root(tree))
 
         # preorder_print(thread_map[head], head)
         # nx.draw_networkx(thread_map[head])
