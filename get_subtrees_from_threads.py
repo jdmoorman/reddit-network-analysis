@@ -4,7 +4,6 @@ import thread_tree_utils
 def get_subtrees_using_criteria(tree, meets_criteria, root=""):
     if not root:
         root = thread_tree_utils.get_root(tree)
-        print(root)
 
     subtree_list = []
     nodes = [root]

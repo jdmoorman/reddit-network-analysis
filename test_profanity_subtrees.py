@@ -12,7 +12,7 @@ random.seed(1)
 # This file is a sandbox for work in progress
 
 
-file_dates = ["2005-12", "2006-01", "2006-02"]
+file_dates = ["2005-12", "2006-01", "2006-02", "2006-03", "2006-04", "2006-05", "2006-06", "2006-06", "2006-07", "2006-08", "2006-09", "2006-10", "2006-11", "2006-12"]
 file_pairs = [
     {
         "comments_file_path": "./comments/RC_" + date + ".json",
@@ -24,23 +24,21 @@ file_pairs = [
 thread_map = get_thread_trees.get_thread_trees(file_pairs)
 
 def criteria(comment):
-    return "it" in comment["body"].lower()
+    return "shit" in comment["body"].lower() or "fuck" in comment["body"].lower() or "damn" in comment["body"].lower() or "piss" in comment["body"].lower() or "cunt" in comment["body"].lower()
+
+shit_subtrees = []
 
 for head in sorted(thread_map):
     assert(nx.is_forest(thread_map[head]))
 
-    if thread_map[head].order() > 20:
-        thread_tree_utils.preorder_print(thread_map[head], head)
-        subtree_list = get_subtrees_from_threads.get_subtrees_using_criteria(thread_map[head], criteria)
-        for tree in subtree_list:
-            print()
-            print("#nodes:",tree.order())
+    shit_subtrees = get_subtrees_from_threads.get_subtrees_using_criteria(thread_map[head], criteria)
+
+    for tree in shit_subtrees:
+        if tree.order() > 10:
+            print(thread_map[head].node[head])
+            print("#nodes:", tree.order())
             thread_tree_utils.preorder_print(tree, thread_tree_utils.get_root(tree))
 
-        # preorder_print(thread_map[head], head)
-        # nx.draw_networkx(thread_map[head])
-        # plt.show()
-        break
 
 # bipartite_graph = bipartite_graphs.get_bipartite_graph_from_threads(thread_map)
 #
