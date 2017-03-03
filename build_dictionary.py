@@ -2,6 +2,7 @@
 from iterate_over_json_file import execute_on_each_element
 import re
 import json
+from gensim import corpora
 import warnings
 warnings.filterwarnings("ignore", message="pyplot.hold is deprecated")
 warnings.filterwarnings("ignore", message="axes.hold is deprecated")
@@ -50,3 +51,14 @@ for file_pair in file_pairs:
 
 with open('./dictionary.json', 'w') as fp:
     json.dump(arguments["dictionary"], fp)
+
+with open("./dictionary.json", 'r') as dictionary_file:
+    word_list = json.load(dictionary_file)
+    trimmed_list = []
+    for word in word_list:
+        if word_list[word] > 1:
+            trimmed_list.append(word)
+
+dictionary = corpora.Dictionary([[word for word in sorted(trimmed_list)]])
+
+dictionary.save("gensim_dictionary")
