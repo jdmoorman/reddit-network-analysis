@@ -12,8 +12,8 @@ dictionary = corpora.Dictionary.load("gensim_dictionary")
 start_year = 2005
 start_month = 12
 
-end_year = 2006
-end_month = 5
+end_year = 2007
+end_month = 12
 
 year = start_year
 month = start_month
@@ -35,36 +35,40 @@ file_pairs = [
     } for date in file_dates
 ]
 
-# Term document matrix for threads as documents
-# # Optionally pass a string argument with the subreddit into get_thread_trees
-# thread_map = get_thread_trees.get_thread_trees(file_pairs)
-#
-# doc_n = 1
-# output_file = open("./threads_term_document.dat", "w")
-#
-# for head in sorted(thread_map):
-#     assert(nx.is_forest(thread_map[head]))
-#     thread_string = ""
-#     for node, data in thread_map[head].nodes_iter(data=True):
-#         thread_string += " " + data["body"]
-#     words_in_thread = re.findall(r"[\w'-]+", thread_string.lower())
-#     word_vector = dictionary.doc2bow(words_in_thread)
-#     for pair in word_vector:
-#         output_file.write(str(doc_n)+"\t"+str(pair[0])+"\t"+str(pair[1])+"\n")
-#         print(str(doc_n)+"\t"+str(pair[0])+"\t"+str(pair[1])+"\n")
+# Term document matrices for comments and threads
+arguments = {
+    "dictionary": dictionary,
+    "comment_n": 1,
+    "comment_td_file": open("./comments_term_document.dat", "w"),
+    "thread_map": {}
+}
 
-# Term document matrix for comments as documents
-# arguments = {"dictionary": dictionary, "doc_n":1, "output_file":open("./comments_term_document.dat", "w")}
-#
-# def add_words_to_dictionary(comment, args):
-#     word_list = re.findall(r"[\w'-]+", comment["body"].lower())
-#     word_vector = args["dictionary"].doc2bow(word_list)
-#
-#     for pair in word_vector:
-#         args["output_file"].write(str(args["doc_n"])+"\t"+str(pair[0])+"\t"+str(pair[1])+"\n")
-#     args["doc_n"] += 1
-#
-# for file_pair in file_pairs:
-#     execute_on_each_element(file_pair["comments_file_path"], add_words_to_dictionary, arguments)
-#
-# arguments["output_file"].close()
+def add_words_to_td_matrices(comment, args):
+    word_list = re.findall(r"[\w'-]+", comment["body"].lower())
+    word_vector = args["dictionary"].doc2bow(word_list)
+
+    for pair in word_vector:
+        args["comment_td_file"].write(str(args["comment_n"])+"\t"+str(pair[0])+"\t"+str(pair[1])+"\n")
+    args["comment_n"] += 1
+
+    if comment["link_id"] not in args["thread_map"]:
+        args["thread_map"][comment["link_id"]] = {}
+
+    for pair in word_vector:
+        if pair[0] not in args["thread_map"][comment["link_id"]]:
+            args["thread_map"][comment["link_id"]][pair[0]] = pair[1]
+        else:
+            args["thread_map"][comment["link_id"]][pair[0]] += pair[1]
+
+for file_pair in file_pairs:
+    execute_on_each_element(file_pair["comments_file_path"], add_words_to_td_matrices, arguments)
+
+arguments["comment_td_file"].close()
+
+thread_td_file = open("./threads_term_document.dat", 'w')
+
+thread_n = 1
+for thread in arguments["thread_map"]:
+    for word_key in arguments["thread_map"][thread]:
+        thread_td_file.write(str(thread_n)+"\t"+str(word_key)+"\t"+str(arguments["thread_map"][thread][word_key])+"\n")
+    thread_n += 1
