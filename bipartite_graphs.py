@@ -186,3 +186,27 @@ def get_profane_comment_count_weighted_bipartite_graph_from_files(file_pairs):
         execute_on_each_element(file_pair["comments_file_path"], add_comment_to_graph, arguments)
 
     return arguments["graph"]
+
+def weight_by_sum_of_weights_above_thresh(graph, node, neigh1, neigh2):
+    if graph.edge[node][neigh1]["weight"] + graph.edge[node][neigh2]["weight"] > 10:
+        return 1
+    else:
+        return 0
+
+def projected_graph(bi_graph, nodes, weight_function):
+    graph = nx.Graph()
+    for node in nodes:
+        graph.add_node(node)
+    for node in set(bi_graph)-nodes:
+        for neigh1 in bi_graph.neighbors(node):
+            for neigh2 in bi_graph.neighbors(node):
+                if neigh1 == neigh2:
+                    continue
+                weight = weight_function(bi_graph, node, neigh1, neigh2)
+                if weight == 0:
+                    continue
+                if graph.has_edge(neigh1, neigh2):
+                    graph.edge[neigh1][neigh2]["weight"] += weight
+                else:
+                    graph.add_edge(neigh1,neigh2,weight=weight)
+    return graph

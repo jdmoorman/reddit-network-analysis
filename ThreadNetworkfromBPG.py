@@ -18,18 +18,16 @@ print("goodbye world")
 
 bipartite_graph = bipartite_graphs.get_comment_count_weighted_bipartite_graph_from_files(file_pairs)
 
-x = max(nx.connected_component_subgraphs(bipartite_graph), key=len)
+Unigraph = max(nx.connected_component_subgraphs(bipartite_graph), key=len)
 
-
-print("largest connected component: ", len(x))
+print("largest connected component: ", len(Unigraph))
 print("full graph: ", len(bipartite_graph))
 
-# [author,threads]=bipartite_graphs.get_author_and_thread_nodes(x)
-# Unigraph=MultiGraphToWeighted.MultToW(x)
+[author,threads] = bipartite_graphs.get_author_and_thread_nodes(Unigraph)
 
 
 #weighted grap
-# threadProjG= bipartite.projected_graph(Unigraph,threads)
+threadProjG= bipartite_graphs.projected_graph(Unigraph, threads, bipartite_graphs.weight_by_sum_of_weights_above_thresh)
 #file1 = open("./threadDegreeCentrality.txt", "w")
 #file2 = open("./threadBetweennessCentrality.txt", "w")
 #threadPartition=CeCoA.CeCom(threadProjG,file1,file2,plotval=False)
