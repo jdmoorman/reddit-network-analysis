@@ -9,7 +9,7 @@ import swear_word_set_getter
 start_year = 2005
 start_month = 12
 
-end_year = 2006
+end_year = 2010
 end_month = 12
 
 file_pairs = []
@@ -49,27 +49,38 @@ arguments = {
     "comment_n": 1,
     "swears": swear_word_map,
     "swear_count": 0,
-    "word_count": 0
+    "word_count": 0,
+    "profane_comment_count": 0,
+    "comment_count": 0
 }
 
 def count_profanity(comment, args):
+
     word_list = re.findall(r"[\w'-]+", comment["body"].lower())
 
     args["word_count"] += len(word_list)
+    args["comment_count"] += 1
 
     for word in word_list:
+        had_swears = False
         if word in args["swears"]:
             args["swear_count"] += 1
             args["swears"][word] += 1
+            had_swears = True
+        if had_swears:
+            args["profane_comment_count"] += 1
 
     pass
 
 prev_swear_count = 0
 prev_word_count = 0
+prev_profane_comment_count = 0
+prev_comment_count = 0
 
 totals_file = open("./monthly_swear_and_word_totals.csv", "w", newline="\n", encoding="utf-8")
 totals_writer = csv.writer(totals_file)
-totals_writer.writerow(["month", "swears", "words", "ratio"])
+totals_writer.writerow(["month", "swears", "words", "swears_words_ratio",
+                        "profane_comments", "comments", "profane_comments_ratio"])
 
 swears_of_interest = sorted(swear_word_map)
 prev_month_counts = {word:0 for word in swears_of_interest}
@@ -85,11 +96,17 @@ for file_pair in file_pairs:
 
     this_month_swear_count = arguments["swear_count"] - prev_swear_count
     this_month_word_count = arguments["word_count"] - prev_word_count
+    this_month_profane_comment_count = arguments["profane_comment_count"] - prev_profane_comment_count
+    this_month_comment_count = arguments["comment_count"] - prev_comment_count
     this_month_counts = {word:arguments["swears"][word]-prev_month_counts[word] for word in swears_of_interest}
 
     prev_swear_count = arguments["swear_count"]
     prev_word_count = arguments["word_count"]
+    prev_profane_comment_count = arguments["profane_comment_count"]
+    prev_comment_count = arguments["comment_count"]
     prev_month_counts = {word:arguments["swears"][word] for word in swears_of_interest}
 
-    totals_writer.writerow([date, this_month_swear_count, this_month_word_count, this_month_swear_count/this_month_word_count])
+    totals_writer.writerow([date, this_month_swear_count, this_month_word_count,
+                            this_month_swear_count/this_month_word_count, this_month_profane_comment_count,
+                            this_month_comment_count, this_month_profane_comment_count/this_month_comment_count])
     all_swears_writer.writerow([date]+[this_month_counts[swear] for swear in swears_of_interest])
