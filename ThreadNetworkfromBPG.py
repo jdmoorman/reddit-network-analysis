@@ -9,15 +9,27 @@ import MultiGraphToWeighted
 import bipartite_graphs
 from networkx.algorithms import bipartite
 import CentralityAndCommunityAnalysis as CeCo
-import dostuffbiggertimeframe as dostuff
+import construct_file_pairs
+import networkx as nx
 
-x=dostuff.largest_component
-[author,threads]=bipartite_graphs.get_author_and_thread_nodes(x)
-Unigraph=MultiGraphToWeighted.MultToW(x)
+print("hello world")
+file_pairs = construct_file_pairs.file_pairs_from_date_range(12,2005,12,2006)
+print("goodbye world")
+
+bipartite_graph = bipartite_graphs.get_comment_count_weighted_bipartite_graph_from_files(file_pairs)
+
+x = max(nx.connected_component_subgraphs(bipartite_graph), key=len)
+
+
+print("largest connected component: ", len(x))
+print("full graph: ", len(bipartite_graph))
+
+# [author,threads]=bipartite_graphs.get_author_and_thread_nodes(x)
+# Unigraph=MultiGraphToWeighted.MultToW(x)
 
 
 #weighted grap
-threadProjG= bipartite.projected_graph(Unigraph,threads)
+# threadProjG= bipartite.projected_graph(Unigraph,threads)
 #file1 = open("./threadDegreeCentrality.txt", "w")
 #file2 = open("./threadBetweennessCentrality.txt", "w")
 #threadPartition=CeCoA.CeCom(threadProjG,file1,file2,plotval=False)

@@ -5,38 +5,13 @@ import matplotlib.pyplot as plt
 import warnings
 warnings.filterwarnings("ignore", message="pyplot.hold is deprecated")
 warnings.filterwarnings("ignore", message="axes.hold is deprecated")
+import construct_file_pairs
 
 
 # This file is a sandbox for work in progress
 
 
-start_year = 2005
-start_month = 12
-
-end_year = 2006
-end_month = 12
-
-year = start_year
-month = start_month
-
-file_dates = []
-
-while year*100+month <= 100*end_year+end_month:
-    file_date = str(year)+"-"+"0"*(2-len(str(month)))+str(month)
-    file_dates.append(file_date)
-    month += 1
-    if month > 12:
-        month = 1
-        year += 1
-
-file_pairs = [
-    {
-        "comments_file_path": "./comments/RC_" + date + ".json",
-        "threads_file_path": "./submissions/RS_" + date + ".json"
-    } for date in file_dates
-]
-
-print("hello world")
+file_pairs = construct_file_pairs.file_pairs_from_date_range(12,2005,12,2006)
 
 # Optionally pass a string argument with the subreddit into get_thread_trees
 thread_map = get_thread_trees.get_thread_trees(file_pairs)
@@ -64,8 +39,6 @@ bipartite_graph = bipartite_graphs.get_bipartite_graph_from_threads(thread_map)
 thread_map.clear()
 
 largest_component = max(nx.connected_component_subgraphs(bipartite_graph), key=len)
-
-
 
 print("largest connected component: ", len(largest_component))
 print("full graph: ", len(bipartite_graph))
