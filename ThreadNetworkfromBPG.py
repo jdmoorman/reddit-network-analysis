@@ -8,11 +8,14 @@ Created on Thu Mar  9 17:38:38 2017
 import MultiGraphToWeighted
 import bipartite_graphs
 from networkx.algorithms import bipartite
-import CentralityAndCommunityAnalysis as CeCoA
+import CentralityAndCommunityAnalysis as CeCo
+import dostuffbiggertimeframe as dostuff
 
-x=largest_component
+x=dostuff.largest_component
 [author,threads]=bipartite_graphs.get_author_and_thread_nodes(x)
 Unigraph=MultiGraphToWeighted.MultToW(x)
+
+
 #weighted grap
 threadProjG= bipartite.projected_graph(Unigraph,threads)
 #file1 = open("./threadDegreeCentrality.txt", "w")
