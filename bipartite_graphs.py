@@ -1,4 +1,6 @@
 import networkx as nx
+from iterate_over_json_file import execute_on_each_element
+import swear_word_set_getter
 
 
 def get_bipartite_graph_from_threads(thread_map):
@@ -31,3 +33,22 @@ def get_author_and_thread_nodes(bi_graph):
     author_nodes = set(n for n, d in bi_graph.nodes(data=True) if d["bipartite"] == "author")
     thread_nodes = set(bi_graph) - author_nodes
     return author_nodes, thread_nodes
+
+
+def get_swear_weighted_bipartite_graph_from_files(file_pairs):
+    # Term document matrices for comments and threads
+    arguments = {
+        "swears": swear_word_set_getter.get_swear_word_set(),
+        "user_set": set(),
+        "thread_set": set(),
+        "graph": nx.Graph()
+    }
+
+    def add_comment_to_graph(comment, args):
+        pass
+
+    for file_pair in file_pairs:
+        print(file_pair)
+        execute_on_each_element(file_pair["comments_file_path"], add_comment_to_graph, arguments)
+
+    return arguments["graph"]
