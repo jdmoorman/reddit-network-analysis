@@ -17,6 +17,9 @@ months = linspace(start_month, end_month, n_months);
 word_counts = monthly_swear_and_word_totals.('words');
 total_swear_counts = monthly_swear_and_word_totals.('swears');
 
+comment_counts = monthly_swear_and_word_totals.('comments');
+total_profane_comment_counts = monthly_swear_and_word_totals.('profane_comments');
+
 % plot total swears over time
 figure
 hold on
@@ -26,6 +29,20 @@ title('(total swears)/(total words) per month')
 xlabel('month')
 ylabel('swears/words')
 datetick('x', 'yyyy-mm')
+
+% plot profane comments over time
+figure
+hold on
+
+plot(months, total_profane_comment_counts./comment_counts);
+title('(profane comments)/(total comments) per month')
+xlabel('month')
+ylabel('swears/words')
+datetick('x', 'yyyy-mm')
+
+figure
+hold on
+
 
 % get counts of each swear for all time
 totals = [];
