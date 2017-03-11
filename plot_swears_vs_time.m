@@ -40,8 +40,15 @@ xlabel('month')
 ylabel('swears/words')
 datetick('x', 'yyyy-mm')
 
+% plot total comments over time
 figure
 hold on
+
+plot(months, comment_counts);
+title('(total comments) per month')
+xlabel('month')
+ylabel('comment volume')
+datetick('x', 'yyyy-mm')
 
 
 % get counts of each swear for all time
