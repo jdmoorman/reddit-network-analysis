@@ -49,7 +49,7 @@ for nodethread in threads:
     if threadSubReddit[nodethread] not in CommDist[currPartVal]:
         CommDist[currPartVal][threadSubReddit[nodethread]]=1
     else:
-        CommDist[currPartVal][threadSubReddit[nodethread]]
+        CommDist[currPartVal][threadSubReddit[nodethread]]+=1
         
 
 
