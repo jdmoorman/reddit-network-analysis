@@ -5,15 +5,16 @@ Created on Thu Mar  9 17:38:38 2017
 @author: the_p
 """
 
-import MultiGraphToWeighted
+#import MultiGraphToWeighted
 import bipartite_graphs
-from networkx.algorithms import bipartite
-import CentralityAndCommunityAnalysis as CeCo
+#from networkx.algorithms import bipartite
+import CentralityAndCommunityAnalysis as CeCoA
+import community
 import construct_file_pairs
 import networkx as nx
 
 print("hello world")
-file_pairs = construct_file_pairs.file_pairs_from_date_range(12,2005,12,2006)
+file_pairs = construct_file_pairs.file_pairs_from_date_range(12,2005,11,2006)
 print("goodbye world")
 
 bipartite_graph = bipartite_graphs.get_comment_count_weighted_bipartite_graph_from_files(file_pairs)
@@ -28,11 +29,14 @@ print("full graph: ", len(bipartite_graph))
 
 #weighted grap
 threadProjG= bipartite_graphs.projected_graph(Unigraph, threads, bipartite_graphs.weight_by_sum_of_weights_above_thresh)
-#file1 = open("./threadDegreeCentrality.txt", "w")
-#file2 = open("./threadBetweennessCentrality.txt", "w")
-#threadPartition=CeCoA.CeCom(threadProjG,file1,file2,plotval=False)
+Unithread = max(nx.connected_component_subgraphs(threadProjG), key=len)
+file1 = open("./ProjThreadMaxThresDegreeCentrality.txt", "w")
+file2 = open("./ProjThreadMaxThresBetweennessCentrality.txt", "w")
+#threadPartition=CeCo.CeCom(threadProjG,file1,file2,plotval=True)
+print("projection Completed")
+#partition = community.best_partition(G)
 
 
 
-#threadPartition=CeCoA.CeCom(threadProjG,file1,file2,True)
+threadPartition=CeCoA.CeCom(threadProjG,file1,file2,False)
 
