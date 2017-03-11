@@ -36,4 +36,20 @@ file2 = open("./ProjThreadMaxThresBetweennessCentrality.txt", "w")
 print("projection Completed")
 #partition = community.best_partition(G)
 threadPartition=CeCoA.CeCom(Unithread,file1,file2,False)
+#get subreddit dictionary
+#Hi Guys!!!!!!!!!!!!!
+threadSubReddit=nx.get_node_attributes(bipartite_graph,'subreddit')
+#possible communities
+commVals=set(threadPartition.values())
+#initialize empty CommDist, at the end get dictionary where {CommDist[i]} gives the
+# subreddit frequencies in that given communities
+CommDist={k:{} for k in commVals}
+for nodethread in threads:
+    currPartVal=threadPartition[nodethread]#current partition
+    if threadSubReddit[nodethread] not in CommDist[currPartVal]:
+        CommDist[currPartVal][threadSubReddit[nodethread]]=1
+    else:
+        CommDist[currPartVal][threadSubReddit[nodethread]]
+        
+
 
