@@ -35,8 +35,5 @@ file2 = open("./ProjThreadMaxThresBetweennessCentrality.txt", "w")
 #threadPartition=CeCo.CeCom(threadProjG,file1,file2,plotval=True)
 print("projection Completed")
 #partition = community.best_partition(G)
-
-
-
-threadPartition=CeCoA.CeCom(threadProjG,file1,file2,False)
+threadPartition=CeCoA.CeCom(Unithread,file1,file2,False)
 

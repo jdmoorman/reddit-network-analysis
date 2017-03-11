@@ -66,7 +66,7 @@ def get_comment_count_weighted_bipartite_graph_from_files(file_pairs):
 
         if thread not in thread_map:
             thread_map[thread] = 1
-            graph.add_node(thread, bipartite="thread")
+            graph.add_node(thread, bipartite="thread",subreddit=comment['subreddit'])
         else:
             thread_map[thread] += 1
 
@@ -114,7 +114,7 @@ def get_swear_count_weighted_bipartite_graph_from_files(file_pairs):
 
         if thread not in thread_map:
             thread_map[thread] = 1
-            graph.add_node(thread, bipartite="thread")
+            graph.add_node(thread, bipartite="thread",subreddit=comment['subreddit'])
         else:
             thread_map[thread] += 1
 
@@ -166,7 +166,7 @@ def get_profane_comment_count_weighted_bipartite_graph_from_files(file_pairs):
 
         if thread not in thread_map:
             thread_map[thread] = 1
-            graph.add_node(thread, bipartite="thread")
+            graph.add_node(thread, bipartite="thread",subreddit=comment['subreddit'])
         else:
             thread_map[thread] += 1
 
