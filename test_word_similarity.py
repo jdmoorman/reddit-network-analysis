@@ -12,8 +12,8 @@ dictionary = corpora.Dictionary.load("gensim_dictionary")
 start_year = 2005
 start_month = 12
 
-end_year = 2007
-end_month = 12
+end_year = 2006
+end_month = 1
 
 year = start_year
 month = start_month
@@ -60,15 +60,20 @@ def add_words_to_td_matrices(comment, args):
         else:
             args["thread_map"][comment["link_id"]][pair[0]] += pair[1]
 
-for file_pair in file_pairs:
-    execute_on_each_element(file_pair["comments_file_path"], add_words_to_td_matrices, arguments)
-
-arguments["comment_td_file"].close()
-
 thread_td_file = open("./threads_term_document.dat", 'w')
-
 thread_n = 1
-for thread in arguments["thread_map"]:
-    for word_key in arguments["thread_map"][thread]:
-        thread_td_file.write(str(thread_n)+"\t"+str(word_key)+"\t"+str(arguments["thread_map"][thread][word_key])+"\n")
-    thread_n += 1
+
+
+for file_pair in file_pairs:
+    print(file_pair)
+    execute_on_each_element(file_pair["comments_file_path"], add_words_to_td_matrices, arguments)
+    for thread in arguments["thread_map"]:
+        for word_key in arguments["thread_map"][thread]:
+            thread_td_file.write(str(thread_n)+"\t"+str(word_key)+"\t"+str(arguments["thread_map"][thread][word_key])+"\n")
+        thread_n += 1
+    arguments["thread_map"] = {}
+
+print(thread_n)
+
+thread_td_file.close()
+arguments["comment_td_file"].close()
