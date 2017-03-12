@@ -2,11 +2,11 @@ import requests
 import bz2
 
 
-start_year = 2005
-start_month = 12
+start_year = 2008
+start_month = 1
 
-end_year = 2006
-end_month = 12
+end_year = 2008
+end_month = 3
 
 year = start_year
 month = start_month

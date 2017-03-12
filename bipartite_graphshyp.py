@@ -188,7 +188,7 @@ def get_profane_comment_count_weighted_bipartite_graph_from_files(file_pairs):
     return arguments["graph"]
 
 def weight_by_sum_of_weights_above_thresh(graph, node, neigh1, neigh2):
-    if graph.edge[node][neigh1]["weight"] + graph.edge[node][neigh2]["weight"] > 1:
+    if graph.edge[node][neigh1]["weight"] + graph.edge[node][neigh2]["weight"] > 10:
         return 1/(len(graph.neighbors(node)) )
     else:
         return 0
