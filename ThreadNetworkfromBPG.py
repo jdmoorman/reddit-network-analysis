@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 
 
 print("hello world")
-file_pairs = construct_file_pairs.file_pairs_from_date_range(1,2008,2,2008)
+file_pairs = construct_file_pairs.file_pairs_from_date_range(1,2009,1,2009)
 print("goodbye world")
 
 bipartite_graph = bipartite_graphshyp.get_comment_count_weighted_bipartite_graph_from_files(file_pairs)
@@ -74,16 +74,20 @@ for nodethread in threadsMax:
         CommDist[currPartVal][threadSubReddit[nodethread]]+=1
         #prints degree histogram
 hDe.histogramdegs2(Unithread)
-fig = plt.figure()
-p1=fig.add_subplot(1,1,1)
-lvalues=[]
-lkey=[]
-for key in CommDist[0]:
-        lkey.append(key)
-        lvalues.append(CommDist[0][key])
-p1.pie(lvalues)
-p1.legend(lkey,loc=2,bbox_to_anchor=(1, 1))
-fig.show()
+#experiment with single pie chart, with legend
+#fig = plt.figure()
+#p1=fig.add_subplot(1,1,1)
+#lvalues=[]
+#lkey=[]
+#for key in CommDist[0]:
+#        lkey.append(key)
+#        lvalues.append(CommDist[0][key])
+#p1.pie(lvalues)
+#p1.legend(lkey,loc=2,bbox_to_anchor=(1, 1))
+#fig.show()
+#experiment ended
+
+
 #for k in range(0,4):
 #    p1 = fig.add_subplot(2,2,k+1)
 #    lvalues=[]
@@ -94,8 +98,8 @@ fig.show()
 #    p1.pie(lvalues)
 #    p1.legend(lkey,loc="lower left")
 
-fig.savefig("pies.png")
-fig.show()
+#fig.savefig("pies.png")
+#fig.show()
 
         
 
