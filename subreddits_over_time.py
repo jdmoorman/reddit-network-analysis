@@ -5,7 +5,7 @@ import operator
 import csv
 import swear_word_set_getter
 
-file_pairs = construct_file_pairs.file_pairs_from_date_range(12,2005,12,2006)
+file_pairs = construct_file_pairs.file_pairs_from_date_range(12,2005,12,2010)
 swear_word_map = {swear:0 for swear in swear_word_set_getter.get_swear_word_set()}
 
 arguments = {
