@@ -197,6 +197,8 @@ def projected_graph(bi_graph, nodes, weight_function):
     graph = nx.Graph()
     for node in nodes:
         graph.add_node(node)
+        for attribute in bi_graph.node[node]:
+            graph.node[node][attribute] = bi_graph.node[node][attribute]
     for node in set(bi_graph)-nodes:
         for neigh1 in bi_graph.neighbors(node):
             for neigh2 in bi_graph.neighbors(node):
