@@ -26,18 +26,36 @@ print("hello world")
 file_pairs = construct_file_pairs.file_pairs_from_date_range(1,2009,1,2009)
 print("goodbye world")
 
-bipartite_swear = bipartite_graphshyp.get_comment_count_weighted_bipartite_graph_from_files(file_pairs)
+bipartite_swear =  bipartite_graphshyp.get_swear_count_weighted_bipartite_graph_from_files(file_pairs)
+bipartite_comments=bipartite_graphshyp.get_comment_count_weighted_bipartite_graph_from_files(file_pairs)
 #bipartitewithout subreddit: bipSansRedd
-bipSwearSansRedd=bipartite_swear
+bipSansRedd=bipartite_comments.copy()
+bipSwearSansRedd=bipartite_swear.copy()
 threadSubReddit1=nx.get_node_attributes(bipartite_swear,'subreddit')
 for thread in threadSubReddit1:
     if ((threadSubReddit1[thread]=='reddit.com')or (threadSubReddit1[thread]=='programming')):
         bipSwearSansRedd.remove_node(thread)
+        
+ #for the general comment graph       
+threadSubReddit1=nx.get_node_attributes(bipartite_swear,'subreddit')
+for thread in threadSubReddit1:
+    if ((threadSubReddit1[thread]=='reddit.com')or (threadSubReddit1[thread]=='programming')):
+        bipSansRedd.remove_node(thread)
+#
+
+
 
 #Unigraph = max(nx.connected_component_subgraphs(bipartite_graph), key=len)
 # repeat without reddit.com
 Unigraph= max(nx.connected_component_subgraphs(bipartite_swear), key=len)
 UnigraphSans = max(nx.connected_component_subgraphs(bipSwearSansRedd), key=len)
+Unigraphcomments= max(nx.connected_component_subgraphs(bipartite_comments), key=len)
+UnigraphcommentsSans= max(nx.connected_component_subgraphs(bipSansRedd), key=len)
+
+print("bipartite graph(not restricted to swear graph")
+print("largest connected component with reddit.com: ", len(Unigraphcomments))
+print("largest connected component WITHOUT reddit.com: ", len(UnigraphcommentsSans))
+
 print("Swear bipartite graphs")
 print("largest connected component with reddit.com: ", len(Unigraph))
 print("full graph: ", len(bipartite_swear))
@@ -58,7 +76,8 @@ print("projection Completed")
 threadPartition=CeCoA.CeCom(Unithread,file1,file2,False)
 print("partition Completed")
 #get subreddit dictionary
-threadSubReddit=nx.get_node_attributes(bipartite_graph,'subreddit')
+#bipartite_graph changed to bipartite_swear
+threadSubReddit=nx.get_node_attributes(bipartite_swear,'subreddit')
 
 #Hi Guys!!!!!!!!!!!!!
 #possible communities
