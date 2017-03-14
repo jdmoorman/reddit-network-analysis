@@ -17,14 +17,19 @@ file_pairs = construct_file_pairs.file_pairs_from_date_range(1,2009,1,2009)
 
 list_of_ids = ['t3_7mqez', 't3_7qj9j', 't3_7nbbd']
 
-thread_map = get_thread_trees.get_thread_trees(file_pairs)
+thread_map = get_thread_trees2009.get_thread_trees(file_pairs)
+print("hi juan!")
+#for head in sorted(thread_map):
+#    if head in list_of_ids:
+#        print()
+#        print(head)
+#        thread_tree_utils.preorder_print(thread_map[head], head)
+#    assert(nx.is_forest(thread_map[head]))
+for idval in list_of_ids:
+    print(thread_map[idval].node[idval]['subreddit'],idval)
 
-for head in sorted(thread_map):
-    if head in list_of_ids:
-        print()
-        print(head)
-        thread_tree_utils.preorder_print(thread_map[head], head)
-    assert(nx.is_forest(thread_map[head]))
+
+
 
 # # Recursively print all comments in a thread with proper indentation
 # def preorder_print(graph, node, key_to_sort="created_utc", depth=0):

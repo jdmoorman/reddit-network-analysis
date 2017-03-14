@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 #and returns best partition of G
 def CeCom(G,file1,file2,plotval=False,cent=False):  
     if cent==True:
-        #betwCent=nx.algorithms.centrality.betweenness_centrality(G)
+        betwCent=nx.algorithms.centrality.betweenness_centrality(G)
         degreeCent=nx.algorithms.centrality.degree_centrality(G)
         sorted_degreeCent = sorted(degreeCent.items(), key=operator.itemgetter(1),reverse=True)
         #sorted_betwCent=sorted(betwCent.items(),key=operator.itemgetter(1),reverse=True)
