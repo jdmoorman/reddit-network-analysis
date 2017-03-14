@@ -23,7 +23,7 @@ import hDe
 
 
 print("hello world")
-file_pairs = construct_file_pairs.file_pairs_from_date_range(1,2009,1,2009)
+file_pairs = construct_file_pairs.file_pairs_from_date_range(12,2005,11,2006)
 print("goodbye world")
 
 bipartite_swear =  bipartite_graphshyp.get_swear_count_weighted_bipartite_graph_from_files(file_pairs)
@@ -56,7 +56,7 @@ UnigraphcommentsSans= max(nx.connected_component_subgraphs(bipSansRedd), key=len
 UnigraphcommentsnodeDeg=Unigraphcomments.degree(Unigraphcomments.nodes(),weight="weight")
 UnigraphSwearnodeDeg=UnigraphSwear.degree(UnigraphSwear.nodes(),weight="weight")
 
-print("bipartite graph(not restricted to swear graph_")
+print("bipartite graph(not restricted to swear graph)")
 print("largest connected component with reddit.com: ", len(Unigraphcomments))
 print("largest connected component WITHOUT reddit.com: ", len(UnigraphcommentsSans))
 print(" ")
@@ -66,18 +66,18 @@ print("full graph: ", len(bipartite_swear))
 print("largest connected component WITHOUT reddit.com: ", len(UnigraphSwearSans))
 
 
-[author,threads] = bipartite_graphshyp.get_author_and_thread_nodes(UnigraphSwear)
+[author,threads] = bipartite_graphshyp.get_author_and_thread_nodes(UnigraphcommentsSans)
 
 
 #weighted grap
-threadProjG= bipartite_graphshyp.projected_graph(UnigraphSwear, threads, bipartite_graphshyp.weight_by_sum_of_weights_above_thresh)
+threadProjG= bipartite_graphshyp.projected_graph(UnigraphcommentsSans, threads, bipartite_graphshyp.weight_by_sum_of_weights_above_thresh)
 Unithread = max(nx.connected_component_subgraphs(threadProjG), key=len)
-file1 = open("./ProjThreadMaxThresDegreeCentralitySwear09.txt", "w")
-file2 = open("./ProjThreadMaxThresBetweennessCentralitySwear09.txt", "w")
+file1 = open("./ProjThreadMaxThresDegreeCentrality06NORED.txt", "w")
+file2 = open("./ProjThreadMaxThresBetweennessCentrality06NORED.txt", "w")
 #threadPartition=CeCo.CeCom(threadProjG,file1,file2,plotval=True)
 print("projection Completed")
 #partition = community.best_partition(G)
-threadPartition=CeCoA.CeCom(Unithread,file1,file2,False,True)
+threadPartition=CeCoA.CeCom(Unithread,file1,file2)
 file1.close()
 file2.close()
 print("partition Completed")
