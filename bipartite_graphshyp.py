@@ -122,11 +122,11 @@ def get_swear_count_weighted_bipartite_graph_from_files(file_pairs):
         for word in word_list:
             if word in swears:
                 swear_count += 1
-
-        if graph.has_edge(author, thread):
-            graph.edge[author][thread]["weight"] += swear_count
-        else:
-            graph.add_edge(author, thread, weight=swear_count)
+        if(swear_count>0):
+            if graph.has_edge(author, thread):
+                graph.edge[author][thread]["weight"] += swear_count
+            else:
+                graph.add_edge(author, thread, weight=swear_count)
 
     for file_pair in file_pairs:
         print(file_pair)

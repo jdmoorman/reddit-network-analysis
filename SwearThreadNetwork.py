@@ -47,26 +47,30 @@ for thread in threadSubReddit1:
 
 #Unigraph = max(nx.connected_component_subgraphs(bipartite_graph), key=len)
 # repeat without reddit.com
-Unigraph= max(nx.connected_component_subgraphs(bipartite_swear), key=len)
-UnigraphSans = max(nx.connected_component_subgraphs(bipSwearSansRedd), key=len)
+UnigraphSwear= max(nx.connected_component_subgraphs(bipartite_swear), key=len)
+UnigraphSwearSans = max(nx.connected_component_subgraphs(bipSwearSansRedd), key=len)
+
+
 Unigraphcomments= max(nx.connected_component_subgraphs(bipartite_comments), key=len)
 UnigraphcommentsSans= max(nx.connected_component_subgraphs(bipSansRedd), key=len)
+UnigraphcommentsnodeDeg=Unigraphcomments.degree(Unigraphcomments.nodes(),weight="weight")
+UnigraphSwearnodeDeg=UnigraphSwear.degree(UnigraphSwear.nodes(),weight="weight")
 
-print("bipartite graph(not restricted to swear graph")
+print("bipartite graph(not restricted to swear graph_")
 print("largest connected component with reddit.com: ", len(Unigraphcomments))
 print("largest connected component WITHOUT reddit.com: ", len(UnigraphcommentsSans))
-
+print(" ")
 print("Swear bipartite graphs")
-print("largest connected component with reddit.com: ", len(Unigraph))
+print("largest connected component with reddit.com: ", len(UnigraphSwear))
 print("full graph: ", len(bipartite_swear))
-print("largest connected component WITHOUT reddit.com: ", len(UnigraphSans))
+print("largest connected component WITHOUT reddit.com: ", len(UnigraphSwearSans))
 
 
-[author,threads] = bipartite_graphshyp.get_author_and_thread_nodes(Unigraph)
+[author,threads] = bipartite_graphshyp.get_author_and_thread_nodes(Unigraphcomments)
 
 
 #weighted grap
-threadProjG= bipartite_graphshyp.projected_graph(Unigraph, threads, bipartite_graphshyp.weight_by_sum_of_weights_above_thresh)
+threadProjG= bipartite_graphshyp.projected_graph(Unigraphcomments, threads, bipartite_graphshyp.weight_by_sum_of_weights_above_thresh)
 Unithread = max(nx.connected_component_subgraphs(threadProjG), key=len)
 file1 = open("./ProjThreadMaxThresDegreeCentrality.txt", "w")
 file2 = open("./ProjThreadMaxThresBetweennessCentrality.txt", "w")
