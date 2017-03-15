@@ -17,17 +17,18 @@ def CeCom(G,file1,file2,plotval=False,cent=False):
         betwCent=nx.algorithms.centrality.betweenness_centrality(G)
         degreeCent=nx.algorithms.centrality.degree_centrality(G)
         sorted_degreeCent = sorted(degreeCent.items(), key=operator.itemgetter(1),reverse=True)
-        #sorted_betwCent=sorted(betwCent.items(),key=operator.itemgetter(1),reverse=True)
+        sorted_betwCent=sorted(betwCent.items(),key=operator.itemgetter(1),reverse=True)
         file1.write("degreeCent\n")
         for i in  range(100):
             s = str(sorted_degreeCent[i])
             file1.write(s)
             file1.write("\n")
+            
         file2.write("betweenness_cent\n")
-        #for i in range(100):
-        #    s=str(sorted_betwCent[i])
-        #    file2.write(s)
-        #    file2.write("\n")
+        for i in range(100):
+            s=str(sorted_betwCent[i])
+            file2.write(s)
+            file2.write("\n")
     partition = community.best_partition(G)
     if plotval==True:
         size = float(len(set(partition.values())))

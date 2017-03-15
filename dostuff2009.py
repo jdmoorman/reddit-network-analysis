@@ -12,10 +12,10 @@ warnings.filterwarnings("ignore", message="axes.hold is deprecated")
 # This file is a sandbox for work in progress
 
 
-file_pairs = construct_file_pairs.file_pairs_from_date_range(1,2009,1,2009)
+file_pairs = construct_file_pairs.file_pairs_from_date_range(12,2005,11,2006)
 
 
-list_of_ids = ['t3_7mqez', 't3_7qj9j', 't3_7nbbd']
+list_of_ids = ['t3_cmzs','t3_dw5p', 't3_5u02',]
 
 thread_map = get_thread_trees2009.get_thread_trees(file_pairs)
 print("hi juan!")
