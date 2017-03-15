@@ -77,7 +77,7 @@ prev_word_count = 0
 prev_profane_comment_count = 0
 prev_comment_count = 0
 
-totals_file = open("./monthly_swear_and_word_totals.csv", "w", newline="\n", encoding="utf-8")
+totals_file = open("./output/monthly_swear_and_word_totals.csv", "w", newline="\n", encoding="utf-8")
 totals_writer = csv.writer(totals_file)
 totals_writer.writerow(["month", "swears", "words", "swears_words_ratio",
                         "profane_comments", "comments", "profane_comments_ratio"])
@@ -85,7 +85,7 @@ totals_writer.writerow(["month", "swears", "words", "swears_words_ratio",
 swears_of_interest = sorted(swear_word_map)
 prev_month_counts = {word:0 for word in swears_of_interest}
 
-all_swears_file = open("./individual_swears_monthly.csv", "w", newline="\n", encoding="utf-8")
+all_swears_file = open("./output/individual_swears_monthly.csv", "w", newline="\n", encoding="utf-8")
 all_swears_writer = csv.writer(all_swears_file)
 all_swears_writer.writerow(["month"]+swears_of_interest)
 
