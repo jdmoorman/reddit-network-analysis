@@ -56,7 +56,7 @@ UnigraphcommentsSans= max(nx.connected_component_subgraphs(bipSansRedd), key=len
 UnigraphcommentsnodeDeg=Unigraphcomments.degree(Unigraphcomments.nodes(),weight="weight")
 UnigraphSwearnodeDeg=UnigraphSwear.degree(UnigraphSwear.nodes(),weight="weight")
 
-print("bipartite graph(not restricted to swear graph)")
+print("bipartite graph(not restricted to swear graph_")
 print("largest connected component with reddit.com: ", len(Unigraphcomments))
 print("largest connected component WITHOUT reddit.com: ", len(UnigraphcommentsSans))
 print(" ")
@@ -66,20 +66,20 @@ print("full graph: ", len(bipartite_swear))
 print("largest connected component WITHOUT reddit.com: ", len(UnigraphSwearSans))
 
 
-[author,threads] = bipartite_graphshyp.get_author_and_thread_nodes(Unigraphcomments)
+[author,threads] = bipartite_graphshyp.get_author_and_thread_nodes(UnigraphcommentsSans)
 
 
 #weighted grap
-threadProjG= bipartite_graphshyp.projected_graph(Unigraphcomments, threads, bipartite_graphshyp.weight_by_sum_of_weights_above_thresh)
+threadProjG= bipartite_graphshyp.projected_graph(UnigraphcommentsSans, threads, bipartite_graphshyp.weight_by_sum_of_weights_above_thresh)
 Unithread = max(nx.connected_component_subgraphs(threadProjG), key=len)
-file1 = open("./ProjThreadMaxThresDegreeJustCentrality2009.txt", "w")
-#file2 = open("./ProjThreadMaxThresBetweennessCentrality2009.txt", "w")
+file1 = open("./ProjThreadMaxThresDegreeCentralityUnigraphcomments09.txt", "w")
+file2 = open("./ProjThreadMaxThresBetweennessCentralityUnigraphcomments09.txt", "w")
 #threadPartition=CeCo.CeCom(threadProjG,file1,file2,plotval=True)
 print("projection Completed")
 #partition = community.best_partition(G)
-#threadPartition=CeCoA.CeCom(Unithread,file1,file2,False,True)
-threadPartition=CeCoA.CeComjustDegCent(Unithread,file1,False,True)
+threadPartition=CeCoA.CeCom(Unithread,file1,file2,False,True)
 file1.close()
+file2.close()
 print("partition Completed")
 #get subreddit dictionary
 #bipartite_graph changed to bipartite_swear
