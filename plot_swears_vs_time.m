@@ -137,10 +137,7 @@ ylabel('swears/words')
 datetick('x', 'yyyy-mm')
 xlim([start_month end_month])
 
-%% Swears per Subreddit 
-clc
-clear all
-close all
+%% Swears per Subreddit
 
 comments_per_subreddit = spconvert(load('./output/comments_per_subreddit_sparse.dat'));
 profane_comments_per_subreddit = spconvert(load('./output/profane_comments_per_subreddit_sparse.dat'));
@@ -167,7 +164,7 @@ for n = 1:6
     subplot(2,3,n)
     n_subreddits_over_time = full(sum((comments_per_subreddit>=10^(n-1)),2));
     plot(months_linspace, n_subreddits_over_time)
-    title(sprintf('subreddits with %i comments',10^(n-1)), 'HorizontalAlignment', 'center')
+    title(sprintf('$\\textgreater$ %i comments',10^(n-1)), 'HorizontalAlignment', 'center')
     xlabel('month')
     ylabel('subreddit count')
     datetick('x', 'yyyy-mm')
@@ -181,9 +178,9 @@ for n = 1:6
     subplot(2,3,n)
     n_subreddits_over_time = full(sum((comments_per_subreddit>=10^(n-1)),2))./full(sum((comments_per_subreddit>=1),2));
     plot(months_linspace, n_subreddits_over_time)
-    title(sprintf('fraction of subreddits with %i comments',10^(n-1)), 'HorizontalAlignment', 'center')
+    title(sprintf('$\\textgreater$ %i comments',10^(n-1)), 'HorizontalAlignment', 'center')
     xlabel('month')
-    ylabel('subreddit count')
+    ylabel('ratio')
     datetick('x', 'yyyy-mm')
     xlim([start_month end_month])
 end
@@ -282,7 +279,7 @@ for i = 1:n_subreddits
 end
 legend(labels,'Location','southwest')
 title({sprintf('\\makebox[4in][c]{(word count)/(total comments) per month}');
-       sprintf('\\makebox[4in][c]{for subreddits ranked %i to %i in comment counts}', 1, n_desired)}, 'HorizontalAlignment', 'center')
+       sprintf('\\makebox[4in][c]{for subreddits ranked %i to %i in comment count or word count}', 1, n_desired)}, 'HorizontalAlignment', 'center')
 xlabel('month')
 ylabel('words/comments')
 datetick('x', 'yyyy-mm')
@@ -347,9 +344,6 @@ xlim([start_month end_month])
 
 
 %%
-clc
-clear all
-close all
 
 % What are the most profane subreddits?
 swears_per_subreddit = full(sum(spconvert(load('./output/swears_per_subreddit_sparse.dat')),1));
@@ -373,14 +367,52 @@ results = table(top_n_ratios', 'RowNames', top_n_subreddits')
 figure
 uitable('Data',results{:,:},'ColumnName',{'Swears/Words'},'RowName',results.Properties.RowNames,'Units','Normalized','Position',[0,0,1,1]);
 
+%%
 
+[swears_in_comment,words_in_comment] = import_swear_count_comment_length('./output/swear_count_comment_length.csv');
 
+swears_edges = unique(swears_in_comment);
+words_edges = unique(words_in_comment);
 
+regfig = figure;
+hold on
+xlim([1 100])
+logfig = figure;
+hold on
+xlim([1 100])
+set(gca,'YScale','log')
+normfig = figure;
+hold on
+xlim([1 100])
 
+labels = {};
+label_count = 1;
+for i = 1:6
+    labels{label_count,1} = sprintf('comments containing %i swears',i);
+    label_count = label_count + 1;
+    figure(regfig)
+    histogram(words_in_comment(swears_in_comment==i), words_edges)
+    figure(logfig)
+    histogram(words_in_comment(swears_in_comment==i), words_edges)
+    figure(normfig)
+    histogram(words_in_comment(swears_in_comment==i), words_edges,'Normalization','probability')
+end
 
-
-
-
+figure(regfig)
+legend(labels,'Location','northeast')
+xlabel('Comment Length')
+ylabel('Number of Comments')
+title('Histograms of comment length for fixed number of swears')
+figure(logfig)
+legend(labels,'Location','northeast')
+xlabel('Comment Length')
+ylabel('Number of Comments')
+title('Log scaled histogram of comment length for fixed number of swears')
+figure(normfig)
+legend(labels,'Location','northeast')
+xlabel('Comment Length')
+ylabel('Number of Comments')
+title('Distribution of comment length for fixed number of swears')
 
 
 
