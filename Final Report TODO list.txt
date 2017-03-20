@@ -1,9 +1,14 @@
-abstract(<250 words)
-introduction
+abstract(<250 words) Yacoub
+introduction Yacoub
+Significance Statement Juan
 convert figures to TIFF,EPS,or PDF (low priority)
-Materials and methods
-Results(our current stuff here)
+Materials and methods (dataset description Jacob)
+ Method description (Juan)
+
+Results( Everyone our current stuff here)
 Conclusion ( our current stuff here)
-Acknowlegment
-Citations
+Acknowlegment (Hazel Kwan, Jason Baumgarten, Mason Porter, Students in 285J seminar)
+Citations (Everyone contributes)
 (maximum length 6 pages)
+
+Extra stuff will get trimmed down and piped to Supporting information.
