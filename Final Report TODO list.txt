@@ -1,0 +1,9 @@
+abstract(<250 words)
+introduction
+convert figures to TIFF,EPS,or PDF (low priority)
+Materials and methods
+Results(our current stuff here)
+Conclusion ( our current stuff here)
+Acknowlegment
+Citations
+(maximum length 6 pages)
