@@ -1,38 +1,36 @@
-import requests
-import bz2
+""" 
+Example:
+    Download data from Dec 2006 to Jan 2007:
 
+        $ python download_data.py 12 2006 1 2007
 
-start_year = 2005
-start_month = 12
+"""
 
-end_year = 2006
-end_month = 12
+from data.get_file_sets import from_date_range
+from data.download_uncompress_bz2 import get_bz2
 
-year = start_year
-month = start_month
+def download_data(start_month=None,
+                  start_year=None,
+                  end_month=None,
+                  end_year=None):
 
-base = "http://files.pushshift.io/reddit/"
-categories = ["comments/RC_", "submissions/RS_"]
+    for file_set in from_date_range(start_month=start_month,
+                                    start_year=start_year,
+                                    end_month=end_month,
+                                    end_year=end_year):
 
-while year*100+month < 100*end_year+end_month:
-    for cat in categories:
-        file_name = cat+str(year)+"-"+"0"*(2-len(str(month)))+str(month)
-        url = base+file_name+".bz2"
-        print(url)
+        # Download comments, uncompress and store as json at path
+        get_bz2(url=file_set["remote_comments"],
+                path=file_set["local_comments"])
 
-        # Download the file from `url`, uncompress it, and save it locally under `file_name`.json
+        # Download threads, uncompress and store as json at path
+        get_bz2(url=file_set["remote_threads"],
+                path=file_set["local_threads"])
 
-        r = requests.get(url, stream=True)
-        with open(file_name+".json", 'wb') as out_file:
-            decompressor = bz2.BZ2Decompressor()
-            try:
-                for chunk in r.iter_content(chunk_size=100*1024):
-                    if chunk:
-                        out_file.write(decompressor.decompress(chunk))
-            except OSError:
-                    print("No file found probably, writing empty file instead.")
-
-    month += 1
-    if month > 12:
-        month = 1
-        year += 1
+if __name__ == "__main__":
+    from sys import argv
+    
+    download_data(start_month=int(argv[1]),
+                  start_year=int(argv[2]),
+                  end_month=int(argv[3]),
+                  end_year=int(argv[4]))
