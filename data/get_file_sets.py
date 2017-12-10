@@ -7,9 +7,7 @@ from __future__ import print_function
 from os.path import abspath, dirname, join
 
 REMOTE_BASE = "http://files.pushshift.io/reddit/"
-
-# TODO: abstract this out to configurable location.
-LOCAL_BASE = abspath(dirname(__file__))
+from data_location import LOCAL_BASE
 
 def from_date_range(start_month=None,
                     start_year=None,

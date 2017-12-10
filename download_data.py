@@ -4,6 +4,7 @@ Example:
 
         $ python download_data.py 12 2006 1 2007
 
+TODO: verify checksums
 """
 
 from data.get_file_sets import from_date_range

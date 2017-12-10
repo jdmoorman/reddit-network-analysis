@@ -3,6 +3,7 @@ Generators for files where each line of each file is a json object
 """
 
 import json
+import io
 
 
 def iter_single_json_file(file_path):
@@ -11,9 +12,9 @@ def iter_single_json_file(file_path):
     """
 
     # TODO: figure out why encoding="utf-8" was here
-    with open(file_path, 'r') as in_file:
+    with io.open(file_path, 'r', encoding="utf-8") as in_file:
         for line in in_file:
-            yield json.loads(line)
+            yield json.loads(line, encoding="utf-8")
 
 
 def iter_multiple_json_files(file_paths):
