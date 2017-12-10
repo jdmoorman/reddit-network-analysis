@@ -2,43 +2,60 @@
 Example:
     Download reddit data from Dec 2006 to Jan 2007:
 
-        $ python download_data.py 12 2006 1 2007
+        $ python download_data.py 2006 12 2007 1
 
 TODO: verify checksums
 """
-
-from data.get_file_sets import from_date_range
+from data.data_paths import REMOTE_COMMENTS_FMT_STR, REMOTE_THREADS_FMT_STR, \
+    LOCAL_COMMENTS_FMT_STR, LOCAL_THREADS_FMT_STR
+from iterators import list_files_from_date_range
 from data.download_uncompress_bz2 import get_bz2
 
-def download_data(start_month=12,
-                  start_year=2005,
-                  end_month=None,
-                  end_year=None):
+def download_data(*date_args):
     """
+    Downloads comment and thread data between specified dates
+
+    Arguments:
+        start_year  (int)
+        start_month (int)
+        end_year    (int)
+        end_month   (int)
+
+    Example:
+        Download reddit data from Dec 2006 to Jan 2007:
+
+            download_data(2006, 12, 2007, 1)
+
     TODO: better docstring
     TODO: handle missing arguments
 
-    Downloads comment and thread data between specified dates into ./data
     """
+    remote_comments_list = list_files_from_date_range(
+        REMOTE_COMMENTS_FMT_STR, *date_args)
+    local_comments_list = list_files_from_date_range(
+        LOCAL_COMMENTS_FMT_STR, *date_args)
+
+    remote_threads_list = list_files_from_date_range(
+        REMOTE_THREADS_FMT_STR, *date_args)
+    local_threads_list = list_files_from_date_range(
+        LOCAL_THREADS_FMT_STR, *date_args)
 
     # One set of files per month between the specified dates
-    for file_set in from_date_range(start_month=start_month,
-                                    start_year=start_year,
-                                    end_month=end_month,
-                                    end_year=end_year):
+    for comments_url, comments_filepath, \
+        threads_url, threads_filepath in zip(remote_comments_list,
+                                             local_comments_list,
+                                             remote_threads_list,
+                                             local_threads_list):
 
         # Download comments, uncompress and store as json at path
-        get_bz2(url=file_set["remote_comments"],
-                path=file_set["local_comments"])
+        get_bz2(url=comments_url,
+                path=comments_filepath)
 
         # Download threads, uncompress and store as json at path
-        get_bz2(url=file_set["remote_threads"],
-                path=file_set["local_threads"])
+        get_bz2(url=threads_url,
+                path=threads_filepath)
 
 if __name__ == "__main__":
     from sys import argv
     
-    download_data(start_month=int(argv[1]),
-                  start_year=int(argv[2]),
-                  end_month=int(argv[3]),
-                  end_year=int(argv[4]))
+    download_data(int(argv[1]), int(argv[2]), int(argv[3]), int(argv[4]))

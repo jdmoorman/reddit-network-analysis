@@ -1,5 +1,6 @@
 """
 TODO: docstrings
+TODO: consider leaving files compressed until you need to read them.
 """
 
 from __future__ import print_function
@@ -13,6 +14,7 @@ def get_bz2(url=None, path=None):
     with open(path, 'wb') as out_file:
         decompressor = bz2.BZ2Decompressor()
         try:
+            # TODO: is this chunk size reasonable?
             for chunk in r.iter_content(chunk_size=100*1024):
                 if chunk:
                     out_file.write(decompressor.decompress(chunk))
