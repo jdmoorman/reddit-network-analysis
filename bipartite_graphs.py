@@ -13,8 +13,6 @@ def files_to_polyad_counts(iter_json=None, count_id="count",
     """
     Counts the number of times a given polyad occurs in a list of json objects.
 
-    
-
     TODO: mention it's important one of the keys be author most of the time
     TODO: docstrings
     TODO: require file_sets
