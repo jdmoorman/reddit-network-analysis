@@ -13,7 +13,7 @@ from data.download_uncompress_bz2 import get_bz2
 
 def download_data(*date_args):
     """
-    Downloads comment and thread data between specified dates
+    Downloads comment and thread data between (inclusive) specified dates
 
     Arguments:
         start_year  (int)
@@ -39,6 +39,10 @@ def download_data(*date_args):
         REMOTE_THREADS_FMT_STR, *date_args)
     local_threads_list = list_files_from_date_range(
         LOCAL_THREADS_FMT_STR, *date_args)
+
+    # One loop is used to download both comments and threads so that the
+    # downloads alternate rather than downloading all the comments then all
+    # the threads
 
     # One set of files per month between the specified dates
     for comments_url, comments_filepath, \

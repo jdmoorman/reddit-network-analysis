@@ -1,6 +1,7 @@
 """
 TODO: docstrings
 TODO: consider leaving files compressed until you need to read them.
+TODO: add requests library to dependencies
 """
 
 from __future__ import print_function
