@@ -72,3 +72,16 @@ def format_each(*fmt_specs: Iterable,
     Apply same format string to each arg set in a list
     """
     return [fmt_str.format(fmt_spec) for fmt_spec in fmt_specs]
+
+def merge_lists(*lists: List) -> List:
+    """
+    Merges lists of same length by cycling between them in order
+    """
+    n_lists = len(lists)
+    list_lens = len(lists[0])
+
+    result = [None]*(n_lists*list_lens)
+    for i, list_i in enumerate(lists):
+        result[i::n_lists] = list_i
+
+    return result

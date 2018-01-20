@@ -5,16 +5,18 @@ TODO: verify checksums
 import bz2
 import requests
 
-from .iterators import list_date_strings, format_each
+from .iterators import list_date_strings, format_each, merge_lists
 
 from .paths import REMOTE_COMMENTS_FMT_STR, REMOTE_THREADS_FMT_STR, \
                    LOCAL_COMMENTS_FMT_STR, LOCAL_THREADS_FMT_STR
 
-def download_data(*,
-                  start_year: int,
-                  start_month: int,
-                  end_year: int,
-                  end_month: int) -> None:
+from typing import List
+
+def download_comments_and_threads(*,
+                                  start_year: int,
+                                  start_month: int,
+                                  end_year: int,
+                                  end_month: int) -> None:
     """
     Downloads comment and thread data between specified dates, inclusive
 
@@ -38,20 +40,8 @@ def download_data(*,
     thread_urls = format_each(*date_strings, fmt_str=REMOTE_THREADS_FMT_STR)
     thread_paths = format_each(*date_strings, fmt_str=LOCAL_THREADS_FMT_STR)
 
-    # One loop is used to download both comments and threads so that the
-    # downloads alternate rather than downloading all the comments then all
-    # the threads
-
-    # One set of files per month between the specified dates
-    for comments_url, comments_path, threads_url, threads_path in \
-            zip(comment_urls, comment_paths, thread_urls, thread_paths):
-
-        download_bz2(url=comments_url,
-                     path=comments_path)
-
-        download_bz2(url=threads_url,
-                     path=threads_path)
-
+    download_bz2s(urls=merge_lists(comment_urls, thread_urls),
+                  paths=merge_lists(comment_paths, thread_paths))
 
 def download_bz2(*,
                  url: str,
@@ -60,9 +50,6 @@ def download_bz2(*,
     """
     Downloads bz2 file from url, uncompresses file into path.
     """
-
-    if verbose:
-        print("downloading", url)
 
     req = requests.get(url, stream=True)
     with open(path, 'wb') as out_file:
@@ -77,3 +64,18 @@ def download_bz2(*,
             # Check that a file exists at the given url.
             if verbose:
                 print("Remote file not found. Writing empty file.")
+
+def download_bz2s(*,
+                  urls: List[str],
+                  paths: List[str],
+                  verbose: bool = True) -> None:
+    """
+    Download a list of bz2 files, uncompress to corresponding list of paths
+    """
+    for url, path in zip(urls, paths):
+        if verbose:
+            print("downloading", url)
+
+        download_bz2(url=url,
+                     path=path,
+                     verbose=verbose)

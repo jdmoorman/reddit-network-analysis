@@ -2,7 +2,7 @@
 Playground for stuff
 """
 
-from data.download import download_data
+from data.download import download_comments_and_threads
 from data.paths import LOCAL_COMMENTS_FMT_STR
 from data.iterators import list_date_strings, format_each
 from data.preprocess import records_df
@@ -17,10 +17,10 @@ if __name__ == "__main__":
     end_year=int(argv[3])
     end_month=int(argv[4])
 
-    # download_data(start_year=start_year,
-    #               start_month=start_month,
-    #               end_year=end_year,
-    #               end_month=end_month)
+    download_comments_and_threads(start_year=start_year,
+                                  start_month=start_month,
+                                  end_year=end_year,
+                                  end_month=end_month)
 
     date_strings = list_date_strings(start_year=start_year,
                                      start_month=start_month,
