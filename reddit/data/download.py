@@ -13,26 +13,15 @@ from .paths import REMOTE_COMMENTS_FMT_STR, REMOTE_THREADS_FMT_STR, \
 from typing import List
 
 def download_comments_and_threads(*,
-                                  start_year: int,
-                                  start_month: int,
-                                  end_year: int,
-                                  end_month: int) -> None:
+                                  date_strings: List[str],
+                                  verbose: bool = True) -> None:
     """
-    Downloads comment and thread data between specified dates, inclusive
-
-    Example:
-        Download reddit data from Dec 2006 to Jan 2007:
-
-            download_data(2006, 12, 2007, 1)
+    Downloads comment and thread data
 
     TODO: better docstring
     TODO: handle missing arguments
 
     """
-    date_strings = list_date_strings(start_year=start_year,
-                                     start_month=start_month,
-                                     end_year=end_year,
-                                     end_month=end_month)
 
     comment_urls = format_each(*date_strings, fmt_str=REMOTE_COMMENTS_FMT_STR)
     comment_paths = format_each(*date_strings, fmt_str=LOCAL_COMMENTS_FMT_STR)
@@ -41,7 +30,8 @@ def download_comments_and_threads(*,
     thread_paths = format_each(*date_strings, fmt_str=LOCAL_THREADS_FMT_STR)
 
     download_bz2s(urls=merge_lists(comment_urls, thread_urls),
-                  paths=merge_lists(comment_paths, thread_paths))
+                  paths=merge_lists(comment_paths, thread_paths),
+                  verbose=verbose)
 
 def download_bz2(*,
                  url: str,

@@ -5,7 +5,7 @@ TODO: carefully only use generators for things that make sense to generate.
 Don't bother generating things that would be super quick to list out.
 """
 
-from typing import List, Iterator, Iterable, Any
+from typing import List, Iterator, Iterable, Any, Tuple
 
 import ujson as json
 import io
@@ -23,7 +23,7 @@ def iter_json_file(path: str) -> Iterator[dict]:
         for line in in_file:
             yield json.loads(line)
 
-def iter_json_files(paths: List[str]) -> Iterator[dict]:
+def iter_json_files(paths: Iterable[str]) -> Iterator[dict]:
     """
     Generates dict from json on each line of each file in a list of paths
     """
@@ -32,7 +32,7 @@ def iter_json_files(paths: List[str]) -> Iterator[dict]:
             yield element
 
 def iter_partial_records(*,
-                         paths: List[str],
+                         paths: Iterable[str],
                          keys: List[str]) -> Iterator[List[Any]]:
     """
     Generates lists of values corresponding to the given list of keys from each
@@ -66,7 +66,7 @@ def list_date_strings(*,
 
     return date_strings
 
-def format_each(*fmt_specs: Iterable,
+def format_each(*fmt_specs: str,
                 fmt_str: str) -> List[str]:
     """
     Apply same format string to each arg set in a list
