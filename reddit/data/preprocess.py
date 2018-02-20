@@ -7,86 +7,14 @@ TODO: example usage
 from typing import Iterable, List, Set, Dict, Tuple
 
 import pandas as pd
-import scipy.sparse as sparse
+import glob
+import os.path as osp
 
-from .iterators import iter_partial_records, iter_json_files
+from .iterators import iter_partial_records, iter_json_files, merge_lists
+from .experiment import Experiment
+from .paths import LOCAL_COMMENTS_DIR, LOCAL_THREADS_DIR
 
-def level_sets(*,
-               paths: List[str],
-               keys: List[str]) -> List[Set[str]]:
-    """
-    For each desired key, get the set of all possible corresponding values
-    """
-    level_sets: List[Set[str]] = [set() for key in keys]
 
-    for record in iter_partial_records(paths=paths, keys=keys):
-        for i, level in enumerate(record):
-            level_sets[i].add(level)
-
-    return level_sets
-
-def td_matrix(*,
-              paths: List[str],
-              term_key: str,
-              doc_key: str) -> sparse.spmatrix:
-    keys = [term_key, doc_key]
-    levels = level_sets(paths=paths, keys=keys)
-
-    M = len(levels[0])
-    N = len(levels[1])
-    
-    terms = {term: i for i, term in enumerate(levels[0])}
-    docs = {doc: i for i, doc in enumerate(levels[1])}
-
-    tf = sparse.lil_matrix((M, N))
-
-    for record in iter_partial_records(paths=paths, keys=keys):
-        tf[terms[record[0]], docs[record[1]]] += 1
-
-    return tf
-
-def td_matrix2(*,
-              paths: List[str],
-              term_key: str,
-              doc_key: str) -> sparse.spmatrix:
-    n_terms = 0
-    terms: Dict[str, int] = {}
-
-    n_docs = 0
-    docs: Dict[str, int] = {}
-
-    td_records: Dict[Tuple[int, int], int] = {}
-
-    # for each record
-    for record in iter_partial_records(paths=paths, keys=[term_key, doc_key]):
-        term = record[0]
-        doc = record[1]
-
-        if term not in terms:
-            terms[term] = n_terms
-            n_terms += 1
-
-        if doc not in docs:
-            docs[doc] = n_docs
-            n_docs += 1
-        
-        term_i = terms[term]
-        doc_i = docs[doc]
-
-        if (term_i, doc_i) not in td_records:
-            td_records[(term_i, doc_i)] = 0
-        
-        td_records[(term_i, doc_i)] += 1
-
-    M = len(terms)
-    N = len(docs)
-    
-    td = sparse.dok_matrix((M, N))
-
-    for td_id, val in td_records.items():
-        td[td_id] = val
-
-    return td
 
 def _partial_records_df(*,
                         paths: List[str],
@@ -118,3 +46,37 @@ def records_df(*,
 
     return _partial_records_df(paths=paths,
                                keys=keys)
+
+def extract_terms_by_document(*,
+                              name: str,
+                              term_key: str,
+                              doc_key: str,
+                              dir_path: str,
+                              verbose: bool = True,
+                              existing: bool = True) -> None:
+    """
+    For each file full of comments or threads, extracts the entry corresponding
+    to the given key, and subreddit of each record. Creates a file
+    corresponding to the subreddit, and stores a list of the authors who
+    posted to that subreddit.
+    """
+    
+    paths = sorted(glob.glob(osp.join(dir_path, "*")))
+
+    for path in paths:
+        date = osp.splitext(osp.basename(path))[0]
+
+        exp = Experiment(name=osp.join(name, date), existing=True)
+
+        if exp.glob("*"):
+            if verbose:
+                print("skipping", path, "already extracted")
+            continue
+
+
+        for record in iter_partial_records(paths=[path],
+                                           keys=[term_key, doc_key]):
+            term = record[0]
+            doc = record[1]
+            with exp.open(doc, "a") as f:
+                f.write(term + "\n")

@@ -13,7 +13,9 @@ import datetime
 
 import pandas as pd
 
-def iter_json_file(path: str) -> Iterator[dict]:
+def iter_json_file(path: str,
+                   *,
+                   verbose: bool = False) -> Iterator[dict]:
     """
     Generates json object from each line of the file at the given path
     """
@@ -21,7 +23,11 @@ def iter_json_file(path: str) -> Iterator[dict]:
     # TODO: figure out why encoding="utf-8" was here
     with io.open(path, 'r') as in_file:
         for line in in_file:
-            yield json.loads(line)
+            try:
+                yield json.loads(line)
+            except ValueError:
+                if verbose:
+                    print("missing json line ignored")
 
 def iter_json_files(paths: Iterable[str]) -> Iterator[dict]:
     """
@@ -33,13 +39,18 @@ def iter_json_files(paths: Iterable[str]) -> Iterator[dict]:
 
 def iter_partial_records(*,
                          paths: Iterable[str],
-                         keys: List[str]) -> Iterator[List[Any]]:
+                         keys: List[str],
+                         verbose: bool = False) -> Iterator[List[Any]]:
     """
     Generates lists of values corresponding to the given list of keys from each
     line of the json files specified in paths.
     """
     for elm in iter_json_files(paths):
-        yield [elm[key] for key in keys]
+        try:
+            yield [elm[key] for key in keys]
+        except KeyError:
+            if verbose:
+                print("missing key ignored")
 
 def list_date_strings(*,
                       start_year: int,
